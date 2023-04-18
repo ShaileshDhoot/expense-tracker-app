@@ -24,7 +24,7 @@ app.use(shopRoutes);
 app.use(errorController.get404);
 
 sequelize.sync().then((result)=>{
-    console.log(result);
+    console.log('created product in db using sequeslize');
 }).catch(err=> console.log(err));
 
 app.listen(3000);
