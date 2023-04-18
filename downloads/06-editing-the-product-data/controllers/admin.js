@@ -14,9 +14,17 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product(null, title, imageUrl, description, price);
-  product.save();
-  res.redirect('/');
+  console.log(product);
+  product
+    .save()
+    .then(() => {
+      res.redirect('/');
+    })
+    .catch(err => console.log(err));
 };
+
+
+
 
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
@@ -63,16 +71,13 @@ exports.getProducts = (req, res, next) => {
     });
   });
 };
-const productModel = require('../models/product');
+
 
 exports.deleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  productModel.deleteById(productId, (result) => {
-    if (result === 1) {
-      res.redirect('/admin/products');
-    } else {
-      res.status(404).json({ message: 'Product not found' });
-    }
-    
-  });
+  Product.deleteById(productId)
+  .then(()=>{     
+        res.redirect('/admin/products');      
+  })
+  .catch(err=> console.log(err))  
 };

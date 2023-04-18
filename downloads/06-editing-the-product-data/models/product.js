@@ -1,21 +1,5 @@
-const fs = require('fs');
-const path = require('path');
-
-const p = path.join(
-  path.dirname(require.main.filename),
-  'data',
-  'products.json'
-);
-
-const getProductsFromFile = cb => {
-  fs.readFile(p, (err, fileContent) => {
-    if (err) {
-      cb([]);
-    } else {
-      cb(JSON.parse(fileContent));
-    }
-  });
-};
+const db = require('../util/database')
+const cart = require('./cart')
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
@@ -26,57 +10,26 @@ module.exports = class Product {
     this.price = price;
   }
 
-  save() {
-    getProductsFromFile(products => {
-      if (this.id) {
-        const existingProductIndex = products.findIndex(
-          prod => prod.id === this.id
-        );
-        const updatedProducts = [...products];
-        updatedProducts[existingProductIndex] = this;
-        fs.writeFile(p, JSON.stringify(updatedProducts), err => {
-          console.log(err);
-        });
-      } else {
-        this.id = Math.random().toString();
-        products.push(this);
-        fs.writeFile(p, JSON.stringify(products), err => {
-          console.log(err);
-        });
-      }
-    });
-  }
+//**************using promises and mysql */  
+static fetchAll() {
+ return db.execute('SELECT * FROM products')
+}
 
-  static fetchAll(cb) {
-    getProductsFromFile(cb);
-  }
+static save() {
+  return db.execute(
+    'INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)',
+    [this.title, this.price, this.imageUrl, this.description]
+  );
+}
 
-  static findById(id, cb) {
-    getProductsFromFile(products => {
-      const product = products.find(p => p.id === id);
-      cb(product);
-    });
-  }
-  static deleteById(id, cb) {
-    fs.readFile(p, (err, fileContent) => {
-      if (err) {
-        cb([]);        // ==> return with empty array
-      } else {
-        let products = JSON.parse(fileContent);
-        const updatedProducts = products.filter(product => product.id !== id);  //filter out the product of same id
-        // splice method can be used alsoo, find index nad rest is easy
-      //   const index = products.findIndex(product => product.id === id);
-      // if (index !== -1) {
-      //   products.splice(index, 1);
-        fs.writeFile(p, JSON.stringify(updatedProducts), err => {
-          if (!err) {
-            cb(1); // gotcha and deleted 
-          } else {
-            cb(0); // gadbad hui hai, prodct cnt find ot something wrong
-          }
-        });
-      }
-    });
-  }
-  
-};
+
+static findById(id) {
+return  db.execute('SELECT * FROM products WHERE products.id = ?', [id])
+}
+
+static deleteById(id) {
+return db.execute('DELETE * FROM products WHERE id = ?',[id])
+}
+}
+
+
