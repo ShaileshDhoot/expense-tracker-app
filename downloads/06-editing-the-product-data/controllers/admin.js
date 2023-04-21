@@ -13,11 +13,11 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  Product.create({
-    title: title,
+  req.user.createProduct({  // with help of sequelize we make association of req.user to here and make userId along in product table
+    title: title,           // or can say connecting models with each other
     price: price,
     imageUrl: imageUrl,
-    description: description    
+    description: description 
   })
   .then((result)=>{
     console.log('product added successfully')
@@ -76,7 +76,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.user.getProducts()
   .then(products => {
     res.render('admin/products', {
       prods: products,
@@ -90,7 +90,11 @@ exports.getProducts = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.destroy({where: {id: productId}})  // destroy keyword to delete data by aquiring id from params from url
+//  Product.destroy({where: {id: productId}})  // destroy keyword to delete data by aquiring id from params from url
+  Product.findByPk(productId)
+  .then((product)=>{
+    return product.destroy()
+  })
   .then(()=>{     
         res.redirect('/admin/products');      
   })
