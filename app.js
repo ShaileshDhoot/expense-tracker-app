@@ -28,6 +28,7 @@ app.use(cors());
 
 app.use('/', mainRoutes);
 
+
 // sequelize.authenticate()
 //   .then(() => {
 //     console.log('Connection to the database has been established successfully.');

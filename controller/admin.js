@@ -39,22 +39,17 @@ const updateExpense = async (req, res) => {
   
       // Check if a row with the specified id exists in the database
       let data = await Data.findByPk(id);
-      if (data) {
+      
         // If the row exists, update it with the new data
         data.Expense_Amount = newAmount;
         data.Description = newDescription;
         data.Category = newCategory;
         await data.save();
-      } else {
-        // If the row does not exist, create a new row with the new data
-        data = await Data.create({
-          Expense_Amount: newAmount,
-          Description: newDescription,
-          Category: newCategory
-        });
-      }
-  
-      res.sendStatus(200);
+      
+        
+          /// aaaah fcking check is not working
+    // itis creating new row along with editing existing row
+      res.redirect('/expense-tracker')
     } catch (error) {
       console.log(error);
       res.sendStatus(500);

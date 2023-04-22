@@ -5,7 +5,7 @@ const sequelize = require('../util/database');
 const Data = sequelize.define('expensedata', {
   ID:{
     type: Sequelize.INTEGER,
-    autoIncrement: true,             // probably in new version have to provide default value
+    autoIncrement: true,        
     allowNull: false,
     primaryKey: true
   },

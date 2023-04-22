@@ -63,7 +63,6 @@
 
       <script>
 
-
         document.addEventListener('DOMContentLoaded', () => {
         const table = document.getElementById('expenseTable');
             const addExpenseButton = document.getElementById('addExpenseButton');
@@ -83,6 +82,8 @@
                 </tr>`
                 });
             });
+
+            // Giving variable isEditMode- to check in edit mode or add mode
 
             // clicks on the Edit and Delete buttons
             table.addEventListener('click', (event) => {
@@ -106,7 +107,7 @@
 
                 // Save the ID of the row being edited
                 editId = id;
-            } else if (target.classList.contains('btn-danger')) {
+            } if (target.classList.contains('btn-danger')) {
                 axios.delete(`/expense-tracker/${id}`)
                 .then(response => {
                     console.log(response.data.message);
@@ -118,69 +119,68 @@
             }
         });
 
-        addExpenseButton.addEventListener('click', () => {
-            const amount = document.querySelector('.number').value;
-            const description = document.querySelector('.description').value;
-            const category = document.querySelector('#Category').value;
+    addExpenseButton.addEventListener('click', () => {
+    const amount = document.querySelector('.number').value;
+    const description = document.querySelector('.description').value;
+    const category = document.querySelector('#Category').value;
 
-            if (isEditMode) {
-                // Update existing record
-                axios.put(`/expense-tracker/${editId}`, {
-                    Expense_Amount: amount,
-                    Description: description,
-                    Category: category
-                })
-                .then(response => {
-                    console.log(response.data.message);
-
-                    // Update the row in the table
-                    const row = table.insertRow();
-                    row.innerHTML = `
-                    <tr>
-                        <td>${editId}</td>
-                        <td>${amount}</td>
-                        <td>${description}</td>
-                        <td>${category}</td>
-                        <td><button type="button" class="btn btn-primary">Edit</button></td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
-                    </tr>`;
-
-                    // Reset the form and mode
-                    document.getElementById('tracker').reset();
-                    isEditMode = false;
-                    addExpenseButton.textContent = 'Add Expense';
-
-                    // Delete the old row
-                    table.deleteRow(document.getElementById(editId).rowIndex);
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-            } else {
-                // Create new record
-                axios.post('/expense-tracker', {
-                    Expense_Amount: amount,
-                    Description: description,
-                    Category: category
-                })
-                .then(response => {
-                    console.log(response.data.message);
-                    table.innerHTML += `
-                    <tr>
-                        <td>${response.data.id}</td>
-                        <td>${amount}</td>
-                        <td>${description}</td>
-                        <td>${category}</td>
-                        <td><button type="button" class="btn btn-primary">Edit</button></td>
-                        <td><button type="button" class="btn btn-danger">Delete</button></td>
-                    </tr>`;
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-            }
-            });
+    if (isEditMode) {
+        // Update existing record
+        axios.put(`/expense-tracker/${editId}`, {
+        Expense_Amount: amount,
+        Description: description,
+        Category: category
         })
+        .then(response => {
+        console.log(response.data.message);
+        // Update the row in the table
+        const row = document.getElementById(editId).parentNode.parentNode;
+        row.cells[1].textContent = amount;
+        row.cells[2].textContent = description;
+        row.cells[3].textContent = category;
+        // Reset the form
+        document.querySelector('.number').value = '';
+        document.querySelector('.description').value = '';
+        document.querySelector('#Category').value = 'Others';
+        addExpenseButton.textContent = 'Add Expense';
+        isEditMode = false;
+        addExpenseButton.removeEventListener('click', handleAddExpense);
+        addExpenseButton.addEventListener('click', handleAddExpense);
+        })
+        .catch(err => {
+        console.log(err);
+        });
+    } else {
+        // Add new record
+        axios.post('/expense-tracker', {
+        Expense_Amount: amount,
+        Description: description,
+        Category: category
+        })
+        .then(response => {
+        console.log(response.data.message);
+        // Add the new row to the table
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+            <td>${response.data.ID}</td>
+            <td>${amount}</td>
+            <td>${description}</td>
+            <td>${category}</td>
+            <td><button type="button" class="btn btn-primary">Edit</button></td>
+            <td><button type="button" class="btn btn-danger">Delete</button></td>`;
+        // Reset the form
+        document.querySelector('.number').value = '';
+        document.querySelector('.description').value = '';
+        document.querySelector('#Category').value = 'Others';
+        })
+        .catch(err => {
+        console.log(err);
+        });
+    }
+})
+    });
+
+
       </script>
 </body>
 
