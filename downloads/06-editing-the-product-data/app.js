@@ -7,7 +7,8 @@ const errorController = require('./controllers/error');
 const sequelize = require('./util/database')
 const Product = require('./models/product')
 const User = require('./models/user')
-
+const Cart = require('./models/cart')
+const cartItem = require('./models/cart-item')
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -32,9 +33,16 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.get404);
 
-Product.belongsTo(User,{constraints: true, onDelete:'CASCADE' })  // talking about user created the product, not in regards to purchase
+Product.belongsTo(User,{constraints: true, onDelete:'CASCADE' })  
+// talking about user created the product, not in regards to purchase
 // if user is deleted then cascade means it will execute on product, any product related to user will also b gone
 User.hasMany(Product)
+User.hasOne(Cart)
+Cart.belongsTo(User) //optional
+Cart.belongsToMany(Product,{through: cartItem})
+Product.belongsToMany(Cart, {through: cartItem})
+
+
 
 // sequelize.sync({force:true}) // on setting force-true , we are enabling hard overwite out db table since we have already created table
 // it emityout the table as it overwrite which is not a good way
@@ -50,9 +58,12 @@ sequelize.sync()
         })
     }return user
 })
-// .then(user=>{
-//     //console.log(user);
-// })
+.then(user=>{
+   return user.createCart()
+})
+.then(user=>{
+    app.listen(3000);
+})
 .catch(err=> console.log(err));
 
-app.listen(3000);
+

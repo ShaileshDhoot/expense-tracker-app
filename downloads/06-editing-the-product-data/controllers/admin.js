@@ -90,11 +90,9 @@ exports.getProducts = (req, res, next) => {
 
 exports.deleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-//  Product.destroy({where: {id: productId}})  // destroy keyword to delete data by aquiring id from params from url
-  Product.findByPk(productId)
-  .then((product)=>{
-    return product.destroy()
-  })
+  Product.destroy({where: {id: productId}})  // destroy keyword to delete data by aquiring id from params from url
+  // Product.findByPk(productId)
+  // .then(()=>{})
   .then(()=>{     
         res.redirect('/admin/products');      
   })
