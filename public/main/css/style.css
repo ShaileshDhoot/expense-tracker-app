@@ -33,9 +33,15 @@
             font-weight: bold;
         }
 
+        .btn{
+            color: white;
+            opacity: 1;
+        }
+
         /* Style the edit and delete buttons */
         .edit,
         .delete {
+            color: black;
             padding: 5px 10px;
             border-radius: 5px;
             font-size: 14px;
