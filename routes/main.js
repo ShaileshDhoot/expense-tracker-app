@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getAllExpenses, getExpenseForm, postExpenses, updateExpense, destroyExpenses } = require('../controller/admin');
 
-router.get('/all-expense', getAllExpenses);
+router.get('/allexpense', getAllExpenses);
 
 router.get('/expense-tracker', getExpenseForm);
 

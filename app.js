@@ -3,31 +3,26 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// initialize express app
 const app = express();
 const mainRoutes = require('./routes/main');
-
+const signUpRoutes = require('./routes/signUpRoutes')
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// import Sequelize ORM instance and model
 const sequelize = require('./util/database')
 const Data = require('./model/expense')
-
-// set up middleware to parse incoming JSON request bodies
-app.use(bodyParser.json());
+const signUpData = require('./model/signUp')
 app.use(bodyParser.urlencoded({extended:true}))
 
-// enable cross-origin resource sharing
 app.use(cors());
 
 // app.use('/public/main/css', function(req, res, next) {
 //     res.setHeader('Content-Type', 'text/css');
 //     next();
-//   });
+//   });a
 
 app.use('/', mainRoutes);
-
+app.use('/', signUpRoutes)
 
 // sequelize.authenticate()
 //   .then(() => {
