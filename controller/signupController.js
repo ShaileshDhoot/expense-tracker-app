@@ -8,6 +8,8 @@ exports.getAllUser = (req,res,next)=>{
     .catch(err=>console.log(err))  
 }
 
+
+
 exports.getSignUpForm = (req,res,next)=>{
     res.sendFile('signup.html', { root: './public' })
 }

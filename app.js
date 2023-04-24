@@ -6,6 +6,7 @@ const cors = require('cors');
 const app = express();
 const mainRoutes = require('./routes/main');
 const signUpRoutes = require('./routes/signUpRoutes')
+const logInRoutes = require('./routes/logInRoutes')
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -16,13 +17,11 @@ app.use(bodyParser.urlencoded({extended:true}))
 
 app.use(cors());
 
-// app.use('/public/main/css', function(req, res, next) {
-//     res.setHeader('Content-Type', 'text/css');
-//     next();
-//   });a
+
 
 app.use('/', mainRoutes);
 app.use('/', signUpRoutes)
+app.use('/', logInRoutes)
 
 // sequelize.authenticate()
 //   .then(() => {
