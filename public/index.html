@@ -12,29 +12,16 @@
         integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"
         defer></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-    <!-- <script src="main.js" defer></script> -->
-   
-        <!-- <link rel="stylesheet" href="public/main/css/style.css"> -->
-
-
-</head>
-
+    </head>
 <body class="container">
-
     <h2 class="heading">Expense Tracker</h2>
-
-
-    <form class="myForm col-lg-6 col-md-8 col-sm-10" id="tracker" method="post">
-
-
+    <form class="myForm col-lg-6 col-md-8 col-sm-10" id="tracker" action="/expense/add" method="post">
         <label for="number" class="form-label ">Expense Amount :</label>
-        <input type="text" name="number" class="number form-control ">
-
+        <input type="text" name="expenseAmount" class="number form-control ">
         <label for="text" class="form-label">Description :</label>
-        <input type="text" name="description" class="description form-control" placeholder="Description">
-
+        <input type="text" name="expenseDescription" class="description form-control" placeholder="Description">
         <label for="select" class="form-label ">Category :</label>
-        <select name="Category" id="Category" class="item form-select Category" required>
+        <select name="expenseCategory" id="Category" class="item form-select category" required>
             <option value="Others">Others</option>
             <option value="Rent">Rent</option>
             <option value="Loan">Loan</option>
@@ -44,10 +31,8 @@
             <option value="Groceries">Groceries</option>
             <option value="Travel">Travel</option>
         </select><br>
-        <button type="submit" id="addExpenseButton"  class="btn add btn-primary button" onclick="addExpense()">Add </button>
-        <button type="submit" id="updateExpenseButton"  class="btn Update btn-primary button" onclick="updateExpense()">Update </button><br>
-
-
+        <button type="submit" id="addExpenseButton"  class="btn add btn-primary button" >Add </button>
+        <!-- <button type="submit" id="updateExpenseButton"  class="btn Update btn-primary button" onclick="updateExpense()">Update </button><br> -->
     </form>
 
     <table id="expenseTable" class="table" >
@@ -63,147 +48,39 @@
         </tbody>
       </table>
 
-
       <script>
-
-
-        // document.addEventListener('DOMContentLoaded', () => {
-        // const table = document.getElementById('expenseTable');
-        //     const addExpenseButton = document.getElementById('addExpenseButton');
-        //     let isEditMode = false;
-
-        //     axios.get('/all-expense')
-        //     .then((response) => {
-        //         response.data.forEach(element => {
-        //         table.innerHTML += `
-        //         <tr>
-        //             <td>${element.ID}</td>
-        //             <td>${element.Expense_Amount}</td>
-        //             <td>${element.Description}</td>
-        //             <td>${element.Category}</td>
-        //             <td><button type="button" class="btn btn-primary">Edit</button></td>
-        //             <td><button type="button" class="btn btn-danger">Delete</button></td>
-        //         </tr>`
-        //         });
-        //     });
-
-        //     // clicks on the Edit and Delete buttons
-        //     table.addEventListener('click', (event) => {
-        //     const target = event.target;
-        //     const row = target.parentNode.parentNode; // Get the row element
-        //     const id = row.cells[0].textContent; // Get the ID value from the first cell of the row
-
-        //     if (target.classList.contains('btn-primary')) { // If the Edit button is clicked
-        //         // Populate the form fields with the values from the row
-        //         const amount = row.cells[1].textContent;
-        //         const description = row.cells[2].textContent;
-        //         const category = row.cells[3].textContent;
-
-        //         document.querySelector('.number').value = amount;
-        //         document.querySelector('.description').value = description;
-        //         document.querySelector('#Category').value = category;
-
-        //         // Set the mode to edit
-        //         isEditMode = true;
-        //         addExpenseButton.textContent = 'Update';
-
-        //         // Save the ID of the row being edited
-        //         editId = id;
-        //     } else if (target.classList.contains('btn-danger')) {
-        //         axios.delete(`/expense-tracker/${id}`)
-        //         .then(response => {
-        //             console.log(response.data.message);
-        //             table.deleteRow(row.rowIndex);
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //         });
-        //     }
-        // });
-
-        // addExpenseButton.addEventListener('click', () => {
-        //     const amount = document.querySelector('.number').value;
-        //     const description = document.querySelector('.description').value;
-        //     const category = document.querySelector('#Category').value;
-
+        const form = document.getElementById('tracker');
+        form.addEventListener('submit', addExpense);
+        function addExpense(){
+            const token = localStorage.getItem('token')          
+            if(token){
+                console.log(token,'add expense')
+            }else{
+                console.log('can get token')
+                return
+            }
             
-        //         console.log('isedit mode is false')
-        //         // Add new record
-        //         axios.post('/expense-tracker', {
-        //             Expense_Amount: amount,
-        //             Description: description,
-        //             Category: category
-        //         })
-        //         .then(response => {
-        //             console.log(response.data.message);
-        //             const newRow = table.insertRow(-1);
-        //             newRow.innerHTML = `
-        //             <td>${response.data.id}</td>
-        //             <td>${amount}</td>
-        //             <td>${description}</td>
-        //             <td>${category}</td>
-        //             <td><button type="button" class="btn btn-primary">Edit</button></td>
-        //             <td><button type="button" class="btn btn-danger">Delete</button></td>
-        //             `;
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //         });
-            
-        // });
-
-        // const updateButton = document.getElementById('updateExpenseButton') 
-        // updateButton.addEventListener('click',()=>{
-        //     const amount = document.querySelector('.number').value;
-        //     const description = document.querySelector('.description').value;
-        //     const category = document.querySelector('#Category').value;
-        //         // Update existing record
-        //         console.log('is editmode is true')
-        //         axios.put(`/expense-tracker/${editId}`, {
-        //             Expense_Amount: amount,
-        //             Description: description,
-        //             Category: category
-        //         })
-        //         .then(response => {
-        //             console.log(response.data);
-        //             const row = table.rows[editId];
-        //             row.cells[1].textContent = amount;
-        //             row.cells[2].textContent = description;
-        //             row.cells[3].textContent = category;
-        //             // isEditMode = false;
-        //             // addExpenseButton.textContent = 'Add Expense';
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //         });
-
-        // })
-        
-        // })
-        // document.addEventListener('DOMContentLoaded', (e) => {
-        //     e.preventDefault()
-        //     const table = document.getElementById('expenseTable');
-        //     axios.get('/allexpense')
-        //     .then((response) => {
-        //         response.data.forEach(element => {
-        //         table.innerHTML += `
-        //         <tr>
-        //             <td>${element.ID}</td>
-        //             <td>${element.Expense_Amount}</td>
-        //             <td>${element.Description}</td>
-        //             <td>${element.Category}</td>
-        //             <td><button type="button" class="btn edit btn-primary">Edit</button></td>
-        //             <td><button type="button" class="btn delete btn-danger">Delete</button></td>
-        //         </tr>`
-        //         });
-        //     });
-        // })
-
-        document.addEventListener('DOMContentLoaded', function() {
+            const expenseData={
+                amount : document.querySelector('.number').value,
+                description : document.querySelector('.description').value,
+                category : document.querySelector('.category').value
+            }  
+            //console.log(expenseData)         
+            axios.post('/expense/add', expenseData,{headers: {"Authorization":token}})
+                .then(()=>{
+                    
+                    window.location.href = '/index.html';
+                })
+                .catch(err=>console.log(err))
+        }     
+       
+        document.addEventListener('DOMContentLoaded', function() {            
             const table = document.getElementById('expenseTable');
             const fragment = document.createDocumentFragment();
-            axios.get('/allexpense')
-            .then(function(response) {
+            const token = localStorage.getItem('token')
+            //console.log(token)
+            axios.get('/expense/all', {headers: {"Authorization": token}})
+            .then((response)=> {
                 response.data.forEach(function(element) {
                     const row = document.createElement('tr');
                     const idCell = document.createElement('td');
@@ -214,10 +91,10 @@
                     const deleteCell = document.createElement('td');
                     const editButton = document.createElement('button');
                     const deleteButton = document.createElement('button');
-                    const idText = document.createTextNode(element.ID);
-                    const amountText = document.createTextNode(element.Expense_Amount);
-                    const descriptionText = document.createTextNode(element.Description);
-                    const categoryText = document.createTextNode(element.Category);
+                    const idText = document.createTextNode(element.id);
+                    const amountText = document.createTextNode(element.amount);
+                    const descriptionText = document.createTextNode(element.description);
+                    const categoryText = document.createTextNode(element.category);
                     const editText = document.createTextNode('Edit');
                     const deleteText = document.createTextNode('Delete');
                     editButton.classList.add('btn', 'edit', 'btn-primary');
@@ -237,45 +114,29 @@
                     row.appendChild(editCell);
                     row.appendChild(deleteCell);
                     fragment.appendChild(row);
+                   
                 });
                 table.appendChild(fragment);
-            });
-        });
+            }).catch(err=>console.log(err))
+        });        
 
+        // function updateExpense(){
+        //     const amount = document.querySelector('.number').value;
+        //     const description = document.querySelector('.description').value;
+        //     const category = document.querySelector('#Category').value;
 
-        function addExpense(){
-            const amount = document.querySelector('.number').value;
-            const description = document.querySelector('.description').value;
-            const category = document.querySelector('.Category').value;
-            axios.post('/expense-tracker', {
-                    Expense_Amount: amount,
-                    Description: description,
-                    Category: category
-                })
-                .then(()=>{
-                    console.log('data posted');
-                })
-                .catch(err=>console.log(err))
-        }
-
-
-        function updateExpense(){
-            const amount = document.querySelector('.number').value;
-            const description = document.querySelector('.description').value;
-            const category = document.querySelector('#Category').value;
-
-            axios.put(`/expense-tracker/${id}`, {
-                    Expense_Amount: amount,
-                    Description: description,
-                    Category: category
-                })
-                .then(response => {
-                    console.log('updated in db')
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
+        //     axios.put(`/expense-tracker/${id}`, {
+        //             Expense_Amount: amount,
+        //             Description: description,
+        //             Category: category
+        //         })
+        //         .then(response => {
+        //             console.log('updated in db')
+        //         })
+        //         .catch(err => {
+        //             console.log(err);
+        //         });
+        // }
 
         const table = document.getElementById('expenseTable');
         table.addEventListener('click', (event) => {
@@ -292,7 +153,7 @@
                 document.querySelector('#Category').value = category;
 
             } else if (target.classList.contains('delete')) {
-                axios.delete(`/expense-tracker/${id}`)
+                axios.delete(`/expense/delete/${id}`)
                 .then(response => {
                     console.log('row deleted');
                     table.deleteRow(row.rowIndex);

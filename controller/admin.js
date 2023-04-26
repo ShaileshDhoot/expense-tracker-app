@@ -1,106 +1,73 @@
-const Data = require('../model/expense')
+const Data = require('../model/expense');
 
-const getAllExpenses = (req,res,next)=>{
-    Data.findAll()
-    .then(data=>{
-        res.json(data)
-    })
-    .catch(err=>console.log(err))  
-}
-
-const getExpenseForm = (req,res,next)=>{
-    res.sendFile('index.html', { root: './public' })
-}
-
-const postExpenses =  (req,res,next)=>{
-    const amount = req.body.number;
-    const desc = req.body.description;
-    const categ = req.body.Category;
-    // console.log(req.body.Category);
-    // console.log(amount,desc,categ);
-    Data.create({
-       Expense_Amount: amount,
-        Description: desc,
-        Category: categ
-    })
+exports.addExpense = (req, res, next) => {
+  const { expenseAmount, expenseDescription, expenseCategory } = req.body;
+  console.log(req.body);
+  Data.create({ amount:expenseAmount,description: expenseDescription,category: expenseCategory }) //, userId: req.user.id
     .then(() => {
-        res.redirect('/expense-tracker')
+      res.status(201).json({ message: 'data added -success' });
     })
-    .catch(err => 
-        console.log(err))    
-}
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: 'Server issue' });
+    });
+};
 
-// const updateExpense = async (req, res) => {
-//     try {
-//       const id = req.params.id;
-//       const newAmount = req.body.Expense_Amount;
-//       const newDescription = req.body.Description;
-//       const newCategory = req.body.Category;
-  
-//       // Check if a row with the specified id exists in the database
-//       let data = await Data.findByPk(id);      
-//         // If the row exists, update it with the new data
-//         data.Expense_Amount = newAmount;
-//         data.Description = newDescription;
-//         data.Category = newCategory;
-//         await data.save();   
-        
-//           /// aaaah fcking check is not working
-//     // itis creating new row along with editing existing row
-//       res.redirect('/expense-tracker')
-//     } catch (error) {
-//       console.log(error);
-//       res.sendStatus(500);
-//     }
-//   };
-  
-  
-const updateExpense = (req, res) => {
-    console.log(req.body);
-    const id = req.body.ID;
-    console.log(id);
-    const newAmount = req.body.Expense_Amount
-    const newDescription = req.body.Description
-    const newCategory = req.body.Category
-    // Data.update({ amount, description, Category }, { where: { id } })
-    Data.findByPk(id)
-    .then((data)=>{        
-        data.Expense_Amount = newAmount;
-        data.Description = newDescription;
-        data.Category = newCategory;
-        return data.save(); //----> have tp mention this stupid line to save the changes in database
-    })
-      .then(() => {
-        res.sendStatus(200);
-      })
-      .catch(error => {
-        console.log(error);
-        res.sendStatus(500);
-      });
+exports.getAllExpenses = async (req, res) => {
+  try {
+    const expenses = await Data.findAll(); //{ where: { userId: req.user.id } }
+    res.status(200).json(expenses);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server issue' });
   }
+};
 
-  const destroyExpenses = (req, res) => {
+  
+// exports.updateExpense  = (req, res) => {
+//    // console.log(req.body);
+//     const id = req.body.id;
+//     //console.log(id);
+//     const newAmount = req.body.amount
+//     const newDescription = req.body.description
+//     const newCategory = req.body.category
+//     // Data.update({ amount, description, Category }, { where: { id } })
+//     Data.findByPk(id)
+//     .then((data)=>{        
+//         data.amount = newAmount;
+//         data.description = newDescription;
+//         data.category = newCategory;
+//         return data.save();
+//     })
+//     .then(() => {
+//         res.sendStatus(200).send("Expense added successfully");
+//       })
+//       .catch(error => {
+//         console.log(error);
+//         res.sendStatus(500);    
+//       });
+//   }
+
+  exports.deleteExpense = (req, res) => {
     const id = req.params.id;
     Data.findByPk(id)
       .then(row => {
         if (!row) {
-          return res.status(404).send("User not found");
+          res.status(404).send("user - not found");
         }
         row.destroy()
           .then(() => {
-            res.send("User deleted successfully");
+            res.send("ser deleted ");
           })
           .catch(error => {
             console.log(error);
-            res.status(500).send("Internal server error");
+            res.status(500).send(" server error");
           });
       })
       .catch(error => {
         console.log(error);
-        res.status(500).send("Internal server error");
+        res.status(500).send(" server error");
       });
   }
 
 
-  // now export the logic from controller file
-  module.exports = { getAllExpenses, getExpenseForm, postExpenses, updateExpense, destroyExpenses };

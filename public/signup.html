@@ -11,11 +11,11 @@
         integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"
         defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-    <link rel="stylesheet" href="public/main/css/style.css">
+    <!-- <link rel="stylesheet" href="public/main/css/style.css"> -->
 </head>
 <body>
     <div class="container mt-4">
-        <form method="post" action="/welcome">
+        <form method="post" action="/signUp">
           <div class="mb-3">
             <label for="name" class="form-label">Name:</label>
             <input type="text" class="form-control" id="name" name="name" required>
@@ -45,7 +45,7 @@
             const fullName = document.querySelector('#name').value;
             const emailId = document.querySelector('#email').value;
             const password = document.querySelector('#password').value;
-            axios.post('/welcome', {
+            axios.post('/login', {
                     Name: fullName,
                     Email: emailId,
                     Password: password

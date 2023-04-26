@@ -1,30 +1,21 @@
-const path = require('path')
+
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-const bcrypt = require('bcrypt');
-
-
 const app = express();
 const mainRoutes = require('./routes/main');
-const signUpRoutes = require('./routes/signUpRoutes')
-const logInRoutes = require('./routes/logInRoutes')
-app.use(express.static(path.join(__dirname, 'public')));
+const signUpRoutes = require('./routes/signUpRoutes');
+const logInRoutes = require('./routes/logInRoutes');
+const sequelize = require('./util/database');
+const Expense = require('./model/expense');
+const User = require('./model/signUp');
 
-
-const sequelize = require('./util/database')
-const Data = require('./model/expense')
-const signUpData = require('./model/signUp')
-app.use(bodyParser.urlencoded({extended:true}))
-
+app.use(express.static('public'));
+app.use(express.json());
 app.use(cors());
-
-
-
-app.use('/', mainRoutes);
-app.use('/', signUpRoutes)
-app.use('/', logInRoutes)
-
+app.use(express.urlencoded({ extended: true }));
+app.use('/', signUpRoutes);
+app.use('/', logInRoutes);
+app.use('/expense', mainRoutes);
 // sequelize.authenticate()
 //   .then(() => {
 //     console.log('Connection to the database has been established successfully.');
@@ -33,10 +24,14 @@ app.use('/', logInRoutes)
 //     console.error('Unable to connect to the database:', err);
 //   });
 
-sequelize.sync().then(()=>{
-    console.log('created product in db using sequeslize');
-}).catch(err=> console.log(err));
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
-app.listen(3000,()=>{
-    console.log('setup on 3000');
+
+sequelize.sync()
+.then(()=>{
+    //console.log(' db using sequeslize');
+    app.listen(3000)
 })
+.catch(err=> console.log(err));
+
