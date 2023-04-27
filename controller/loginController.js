@@ -14,7 +14,7 @@ function generateAccessToken(id, name){
 exports.getLogIn = (req, res, next) => {
     const emailId = req.body.email
     const password = req.body.password
-    //console.log(req.body, 'login controller, getlogin function')
+    console.log(req.body, 'login controller, getlogin function')
     signUpData.findOne({ where: { email: emailId } })
     .then(user => {
       if (user) {

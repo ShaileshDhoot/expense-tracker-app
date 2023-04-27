@@ -30,7 +30,6 @@ Expense.belongsTo(User);
 
 sequelize.sync()
 .then(()=>{
-    //console.log(' db using sequeslize');
     app.listen(3000)
 })
 .catch(err=> console.log(err));

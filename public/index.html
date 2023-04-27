@@ -1,170 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Expense Tracker</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"
-        defer></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-    </head>
-<body class="container">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+  </head>
+  <body class="container">
     <h2 class="heading">Expense Tracker</h2>
-    <form class="myForm col-lg-6 col-md-8 col-sm-10" id="tracker" action="/expense/add" method="post">
-        <label for="number" class="form-label ">Expense Amount :</label>
-        <input type="text" name="expenseAmount" class="number form-control ">
-        <label for="text" class="form-label">Description :</label>
-        <input type="text" name="expenseDescription" class="description form-control" placeholder="Description">
-        <label for="select" class="form-label ">Category :</label>
-        <select name="expenseCategory" id="Category" class="item form-select category" required>
-            <option value="Others">Others</option>
-            <option value="Rent">Rent</option>
-            <option value="Loan">Loan</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Shopping">Shopping</option>
-            <option value="Investment">Investment</option>
-            <option value="Groceries">Groceries</option>
-            <option value="Travel">Travel</option>
-        </select><br>
-        <button type="submit" id="addExpenseButton"  class="btn add btn-primary button" >Add </button>
-        <!-- <button type="submit" id="updateExpenseButton"  class="btn Update btn-primary button" onclick="updateExpense()">Update </button><br> -->
+    <form class="myForm col-lg-6 col-md-8 col-sm-10" id="tracker" action="/expense/add"  method="post">
+      <label for="expenseAmount" class="form-label">Expense Amount :</label>
+      <input  type="text" name="expenseAmount" class="number form-control" required/>
+      <label for="expenseDescription" class="form-label">Description :</label>
+      <input type="text"name="expenseDescription" class="description form-control" placeholder="Description" required/>
+      <label for="expenseCategory" class="form-label">Category :</label>
+      <select name="expenseCategory"  id="Category"  class="item form-select category" required>
+        <option value="Others">Others</option>
+        <option value="Rent">Rent</option>
+        <option value="Loan">Loan</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Investment">Investment</option>
+        <option value="Groceries">Groceries</option>
+        <option value="Travel">Travel</option></select><br />
+      <button type="submit" id="addExpenseButton" class="btn add btn-primary button" >  Add  </button>
+      <!-- <button type="submit" id="updateExpenseButton"  class="btn Update btn-primary button" onclick="updateExpense()">Update </button><br> -->
     </form>
 
-    <table id="expenseTable" class="table" >
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Expense Amount</th>
-            <th>Description</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+    <table id="expenseTable" class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Expense Amount</th>
+          <th>Description</th>
+          <th>Category</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-      <script>
-        const form = document.getElementById('tracker');
-        form.addEventListener('submit', addExpense);
-        function addExpense(){
-            const token = localStorage.getItem('token')          
-            if(token){
-                console.log(token,'add expense')
-            }else{
-                console.log('can get token')
-                return
-            }
-            
-            const expenseData={
-                amount : document.querySelector('.number').value,
-                description : document.querySelector('.description').value,
-                category : document.querySelector('.category').value
-            }  
-            //console.log(expenseData)         
-            axios.post('/expense/add', expenseData,{headers: {"Authorization":token}})
-                .then(()=>{
-                    
-                    window.location.href = '/index.html';
-                })
-                .catch(err=>console.log(err))
-        }     
-       
-        document.addEventListener('DOMContentLoaded', function() {            
-            const table = document.getElementById('expenseTable');
-            const fragment = document.createDocumentFragment();
-            const token = localStorage.getItem('token')
-            //console.log(token)
-            axios.get('/expense/all', {headers: {"Authorization": token}})
-            .then((response)=> {
-                response.data.forEach(function(element) {
-                    const row = document.createElement('tr');
-                    const idCell = document.createElement('td');
-                    const amountCell = document.createElement('td');
-                    const descriptionCell = document.createElement('td');
-                    const categoryCell = document.createElement('td');
-                    const editCell = document.createElement('td');
-                    const deleteCell = document.createElement('td');
-                    const editButton = document.createElement('button');
-                    const deleteButton = document.createElement('button');
-                    const idText = document.createTextNode(element.id);
-                    const amountText = document.createTextNode(element.amount);
-                    const descriptionText = document.createTextNode(element.description);
-                    const categoryText = document.createTextNode(element.category);
-                    const editText = document.createTextNode('Edit');
-                    const deleteText = document.createTextNode('Delete');
-                    editButton.classList.add('btn', 'edit', 'btn-primary');
-                    deleteButton.classList.add('btn', 'delete', 'btn-danger');
-                    editButton.appendChild(editText);
-                    deleteButton.appendChild(deleteText);
-                    idCell.appendChild(idText);
-                    amountCell.appendChild(amountText);
-                    descriptionCell.appendChild(descriptionText);
-                    categoryCell.appendChild(categoryText);
-                    editCell.appendChild(editButton);
-                    deleteCell.appendChild(deleteButton);
-                    row.appendChild(idCell);
-                    row.appendChild(amountCell);
-                    row.appendChild(descriptionCell);
-                    row.appendChild(categoryCell);
-                    row.appendChild(editCell);
-                    row.appendChild(deleteCell);
-                    fragment.appendChild(row);
-                   
-                });
-                table.appendChild(fragment);
-            }).catch(err=>console.log(err))
-        });        
+    <script>
+      const form = document.getElementById("tracker");
+      form.addEventListener("submit", addExpense);
 
-        // function updateExpense(){
-        //     const amount = document.querySelector('.number').value;
-        //     const description = document.querySelector('.description').value;
-        //     const category = document.querySelector('#Category').value;
+      function addExpense(e) {
+        e.preventDefault()
+        const token = localStorage.getItem("token");
+        if (token) {
+          console.log(token, "add expense");
+        } else {
+          console.log("can get token");
+          return;
+        }
+        const expenseData = {
+          amount: document.querySelector(".number").value,
+          description: document.querySelector(".description").value,
+          category: document.querySelector(".category").value,
+        };
+        //console.log(expenseData)
+        axios
+          .post("/expense/add", expenseData, {
+            headers: { Authorization: token }
+          })
+          .then((response) => {
+            addNewExpense(expenseData)
+          })
+          .catch((err) => console.log(err));
+      }
 
-        //     axios.put(`/expense-tracker/${id}`, {
-        //             Expense_Amount: amount,
-        //             Description: description,
-        //             Category: category
-        //         })
-        //         .then(response => {
-        //             console.log('updated in db')
-        //         })
-        //         .catch(err => {
-        //             console.log(err);
-        //         });
-        // }
+      function addNewExpense(element) {
+        const table = document.getElementById("expenseTable");
+        const fragment = document.createDocumentFragment();
+        const row = document.createElement("tr");
+        const idCell = document.createElement("td");
+        const amountCell = document.createElement("td");
+        const descriptionCell = document.createElement("td");
+        const categoryCell = document.createElement("td");
+        const editCell = document.createElement("td");
+        const deleteCell = document.createElement("td");
+        const editButton = document.createElement("button");
+        const deleteButton = document.createElement("button");
+        const idText = document.createTextNode(element.id);
+        const amountText = document.createTextNode(element.amount);
+        const descriptionText = document.createTextNode(element.description);
+        const categoryText = document.createTextNode(element.category);
+        const editText = document.createTextNode("Edit");
+        const deleteText = document.createTextNode("Delete");
+        editButton.classList.add("btn", "edit", "btn-primary");
+        deleteButton.classList.add("btn", "delete", "btn-danger");
+        editButton.appendChild(editText);
+        deleteButton.appendChild(deleteText);
+        idCell.appendChild(idText);
+        amountCell.appendChild(amountText);
+        descriptionCell.appendChild(descriptionText);
+        categoryCell.appendChild(categoryText);
+        editCell.appendChild(editButton);
+        deleteCell.appendChild(deleteButton);
+        row.appendChild(idCell);
+        row.appendChild(amountCell);
+        row.appendChild(descriptionCell);
+        row.appendChild(categoryCell);
+        row.appendChild(editCell);
+        row.appendChild(deleteCell);
+        fragment.appendChild(row);
+        table.appendChild(fragment);
+      }
 
-        const table = document.getElementById('expenseTable');
-        table.addEventListener('click', (event) => {
-            const target = event.target;
-            const row = target.parentNode.parentNode; 
-            const id = row.cells[0].textContent; 
-            if (target.classList.contains('edit')) { 
-                const amount = row.cells[1].textContent;
-                const description = row.cells[2].textContent;
-                const category = row.cells[3].textContent;
+      window.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("token");
+        axios
+          .get("/expense/all", { headers: { Authorization: token } })
+          .then((response) => {
+            response.data.forEach((element) => {
+              addNewExpense(element);
+              console.log(token)
+            });
+          })
+          .catch((err) => console.log(err));
+      });
 
-                document.querySelector('.number').value = amount;
-                document.querySelector('.description').value = description;
-                document.querySelector('#Category').value = category;
+      const table = document.getElementById("expenseTable");
+      table.addEventListener("click", (event) => {
+        const target = event.target;
+        const row = target.parentNode.parentNode;
+        const id = row.cells[0].textContent;
+        if (target.classList.contains("edit")) {
+          const amount = row.cells[1].textContent;
+          const description = row.cells[2].textContent;
+          const category = row.cells[3].textContent;
 
-            } else if (target.classList.contains('delete')) {
-                axios.delete(`/expense/delete/${id}`)
-                .then(response => {
-                    console.log('row deleted');
-                    table.deleteRow(row.rowIndex);
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-            }
-        })
-        
-      </script>
-</body>
+          document.querySelector(".number").value = amount;
+          document.querySelector(".description").value = description;
+          document.querySelector("#Category").value = category;
+        } else if (target.classList.contains("delete")) {
+          axios
+            .delete(`/expense/add/delete/${id}`)
+            .then((response) => {
+              console.log("row deleted");
+              table.deleteRow(row.rowIndex);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      });
+      // function updateExpense(){
+    //     const amount = document.querySelector('.number').value;
+    //     const description = document.querySelector('.description').value;
+    //     const category = document.querySelector('#Category').value;
 
+    //     axios.put(`/expense-tracker/${id}`, {
+    //             Expense_Amount: amount,
+    //             Description: description,
+    //             Category: category
+    //         })
+    //         .then(response => {
+    //             console.log('updated in db')
+    //         })
+    //         .catch(err => {
+    //             console.log(err);
+    //         });
+    // }
+    </script>
+  </body>
 </html>
+
+

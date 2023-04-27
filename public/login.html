@@ -70,8 +70,7 @@
             email,
             password
             })
-            .then(response => {
-            // to go to main page if email and password is correct              
+            .then(response => {             
                 localStorage.setItem('token', response.data.token);
                 window.location.href = '/index.html';
             })

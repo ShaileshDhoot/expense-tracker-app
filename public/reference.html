@@ -87,28 +87,4 @@ document.addEventListener('DOMContentLoaded', function() {
 //         });
 // }
 
-const table = document.getElementById('expenseTable');
-table.addEventListener('click', (event) => {
-    const target = event.target;
-    const row = target.parentNode.parentNode; 
-    const id = row.cells[0].textContent; 
-    if (target.classList.contains('edit')) { 
-        const amount = row.cells[1].textContent;
-        const description = row.cells[2].textContent;
-        const category = row.cells[3].textContent;
 
-        document.querySelector('.number').value = amount;
-        document.querySelector('.description').value = description;
-        document.querySelector('#Category').value = category;
-
-    } else if (target.classList.contains('delete')) {
-        axios.delete(`/expense/delete/${id}`)
-        .then(response => {
-            console.log('row deleted');
-            table.deleteRow(row.rowIndex);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    }
-})
