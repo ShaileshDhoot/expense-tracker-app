@@ -1,29 +1,49 @@
 const User = require('../model/signUp')
-const Expense = require('../model/expense')
-const sequelize = require('../util/database')
+
 
 const getLeaderBoard = async (req, res) => {
     try {
       const leaderBoardDetails = await User.findAll({
         attributes: [
-          'id','name',
-          [sequelize.fn('COALESCE', sequelize.fn('SUM', sequelize.col('expenses.amount')), 0), 'totalExpense'],
+          'id', 'name',
+          'totalExpense'
         ],
-        include: [{
-          model: Expense,
-          attributes: [],
-        }],
-        group: ['User.id'],
-        order: [[sequelize.literal('totalExpense'), 'DESC']],
-      });
-      console.log(leaderBoardDetails);
+        order: [
+          ['totalExpense', 'DESC']
+        ]
+      })
+      
       res.status(200).json(leaderBoardDetails);
     } catch (err) {
       console.log(err);
     }
-  };
+  }
   
   module.exports = {getLeaderBoard}
+
+
+// const getLeaderBoard = async (req, res) => {
+//     try {
+//       const leaderBoardDetails = await User.findAll({
+//         attributes: [
+//           'id','name',
+//           [sequelize.fn('COALESCE', sequelize.fn('SUM', sequelize.col('expenses.amount')), 0), 'totalExpense'],
+//         ],
+//         include: [{
+//           model: Expense,
+//           attributes: [],
+//         }],
+//         group: ['User.id'],
+//         order: [[sequelize.literal('totalExpense'), 'DESC']],
+//       });
+      
+//       res.status(200).json(leaderBoardDetails);
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   };
+  
+//   
 //--****** explaination
 /*
 attributes is an array which will b returned by query which  specify the columns to select from the tables.

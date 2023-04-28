@@ -1,5 +1,5 @@
 const Data = require('../model/expense');
-
+const signUpData = require('../model/signUp')
 exports.addExpense = (req, res, next) => {
   const Amount = req.body.amount;
   const Description = req.body.description;
@@ -14,10 +14,22 @@ exports.addExpense = (req, res, next) => {
       description: Description,
       category: Category,
        userId: req.user.id
-  }) 
-    .then(() => {
-      return res.status(201).json({message:' expense created'})
-    })
+  })
+  .then(() => {
+    // retrieve the user record and update the totalExpense column
+    return signUpData.findByPk(req.user.id)
+      .then((user) => {
+        user.totalExpense += parseInt(Amount)
+          return user.save();
+      })
+      .then(() => {
+        return res.status(201).json({message:' expense created'})
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).json({ message: 'Server issue' });
+      });
+  })
     .catch((err) => {
       console.log(err);
       return res.status(500).json({ message: 'Server issue' });
@@ -34,30 +46,6 @@ exports.getAllExpenses = async (req, res) => {
   }
 };
 
-  
-// exports.updateExpense  = (req, res) => {
-//    // console.log(req.body);
-//     const id = req.body.id;
-//     //console.log(id);
-//     const newAmount = req.body.amount
-//     const newDescription = req.body.description
-//     const newCategory = req.body.category
-//     // Data.update({ amount, description, Category }, { where: { id } })
-//     Data.findByPk(id)
-//     .then((data)=>{        
-//         data.amount = newAmount;
-//         data.description = newDescription;
-//         data.category = newCategory;
-//         return data.save();
-//     })
-//     .then(() => {
-//         res.sendStatus(200).send("Expense added successfully");
-//       })
-//       .catch(error => {
-//         console.log(error);
-//         res.sendStatus(500);    
-//       });
-//   }
 
   exports.deleteExpense = (req, res) => {
     const id = req.params.id;
