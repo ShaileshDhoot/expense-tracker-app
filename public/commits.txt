@@ -1,0 +1,5 @@
+27/4/23 commit - 781547c..f4af2de 
+
+added userid to expense table via association, had to make changes to frontend
+and able to isolate user and their expenses respectively.
+

@@ -4,8 +4,8 @@ exports.addExpense = (req, res, next) => {
   const Amount = req.body.amount;
   const Description = req.body.description;
   const Category = req.body.category;
-  console.log( 'addexpense  console----->',req.body);
-  console.log('userid while creating expense--->' ,req.user.id)
+  // console.log( 'addexpense  console----->',req.body);
+  // console.log('userid while creating expense--->' ,req.user.id)
   if(Amount==undefined||Amount.length===0){return res.status(400).json({message:'empty amount'})}
   if(Description==undefined||Description.length===0){return res.status(400).json({message:'empty Description'})}
   if(Category==undefined||Category.length===0){return res.status(400).json({message:'empty Category'})}
