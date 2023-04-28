@@ -6,7 +6,7 @@ const middlewareFunc = require('../middleware/auth')
 router.post('/add', middlewareFunc.authMiddleware ,mainController.addExpense);
 router.get('/all', middlewareFunc.authMiddleware,mainController.getAllExpenses);
 
-router.delete('/add/delete/:id', mainController.deleteExpense);
+router.delete('/add/delete/:id', middlewareFunc.authMiddleware, mainController.deleteExpense);
 
 module.exports = router;
 

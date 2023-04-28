@@ -1,40 +1,47 @@
 const Data = require('../model/expense');
 const signUpData = require('../model/signUp')
-exports.addExpense = (req, res, next) => {
-  const Amount = req.body.amount;
-  const Description = req.body.description;
-  const Category = req.body.category;
-  // console.log( 'addexpense  console----->',req.body);
-  // console.log('userid while creating expense--->' ,req.user.id)
-  if(Amount==undefined||Amount.length===0){return res.status(400).json({message:'empty amount'})}
-  if(Description==undefined||Description.length===0){return res.status(400).json({message:'empty Description'})}
-  if(Category==undefined||Category.length===0){return res.status(400).json({message:'empty Category'})}
-  Data.create({
-     amount: Amount,
-      description: Description,
-      category: Category,
-       userId: req.user.id
-  })
-  .then(() => {
-    // retrieve the user record and update the totalExpense column
-    return signUpData.findByPk(req.user.id)
-      .then((user) => {
-        user.totalExpense += parseInt(Amount)
-          return user.save();
-      })
-      .then(() => {
-        return res.status(201).json({message:' expense created'})
-      })
-      .catch((err) => {
+const sequelize = require('../util/database')
+exports.addExpense = async (req, res, next) => {
+  try{
+    let t // initialize the variable t
+    const Amount = req.body.amount;
+    const Description = req.body.description;
+    const Category = req.body.category;
+
+    if(Amount==undefined||Amount.length===0){return res.status(400).json({message:'empty amount'})}
+    if(Description==undefined||Description.length===0){return res.status(400).json({message:'empty Description'})}
+    if(Category==undefined||Category.length===0){return res.status(400).json({message:'empty Category'})}
+
+    t = await sequelize.transaction();
+
+    await Data.create({                         
+      amount: Amount,
+        description: Description,
+        category: Category,
+        userId: req.user.id
+    }, {transaction:t}) 
+    
+      const user = await signUpData.findByPk(req.user.id,{transaction:t} )      
+                    user.totalExpense += parseInt(Amount)
+      await user.save({ transaction: t });  
+      await t.commit();   
+        
+      return res.status(201).json({message:' expense created'})     
+    
+      }catch(err) {
         console.log(err);
         return res.status(500).json({ message: 'Server issue' });
-      });
-  })
-    .catch((err) => {
-      console.log(err);
-      return res.status(500).json({ message: 'Server issue' });
-    });
+      };
 };
+
+/*
+ A transaction is a way to ensure that a group of database operations are executed in an all-or-nothing manner.
+  It means that if any operation fails,
+   the entire group of operations is rolled back,
+    and the database returns to its previous state before the transaction started
+ */
+
+
 
 exports.getAllExpenses = async (req, res) => {
   try {
@@ -47,26 +54,28 @@ exports.getAllExpenses = async (req, res) => {
 };
 
 
-  exports.deleteExpense = (req, res) => {
-    const id = req.params.id;
-    Data.findByPk(id)
-      .then(row => {
-        if (!row) {
-          res.status(404).send("user - not found");
-        }
-        row.destroy()
-          .then(() => {
-            res.send("ser deleted ");
-          })
-          .catch(error => {
-            console.log(error);
-            res.status(500).send(" server error");
-          });
-      })
-      .catch(error => {
-        console.log(error);
-        res.status(500).send(" server error");
-      });
+exports.deleteExpense = async (req, res) => {
+  try {
+    
+    const id = req.params.id
+    const expense = await Data.findByPk(id);
+    if (!expense) {
+      return res.status(404).send("Expense not found");
+    }
+
+    const amount = expense.amount
+    await expense.destroy()
+    const user = await signUpData.findByPk(req.user.id);
+    if (user) {
+      user.totalExpense -= amount;
+      await user.save();
+    }
+    
+    return res.send("Expense deleted");
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Server error");
   }
+};
 
 

@@ -4,10 +4,6 @@ const User = require('../model/signUp')
 const getLeaderBoard = async (req, res) => {
     try {
       const leaderBoardDetails = await User.findAll({
-        attributes: [
-          'id', 'name',
-          'totalExpense'
-        ],
         order: [
           ['totalExpense', 'DESC']
         ]
