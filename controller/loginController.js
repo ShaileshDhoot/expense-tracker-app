@@ -3,15 +3,15 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 
-exports.getLogInForm = (req,res,next)=>{
+const getLogInForm = (req,res,next)=>{
     res.sendFile('login.html', { root: './public' })
 }
 
-function generateAccessToken(id, name){
-  return jwt.sign({userId: id, name:name},'secretkey')
+const generateAccessToken=(id, name, isPremiumUser)=>{
+  return jwt.sign({userId: id, name:name, isPremiumUser},'secretkey')
 }
 
-exports.getLogIn = (req, res, next) => {
+const getLogIn = (req, res, next) => {
     const emailId = req.body.email
     const password = req.body.password
     console.log(req.body, 'login controller, getlogin function')
@@ -24,7 +24,7 @@ exports.getLogIn = (req, res, next) => {
             res.status(500).send({ message: "Server error" })
           } else if (result) {
            // console.log('success')
-            res.status(200).send({ token: generateAccessToken(user.id, user.name)});            
+            res.status(200).send({ token: generateAccessToken(user.id, user.name, user.isPremiumUser)});            
           } else {
             res.status(401).send({ message: "Invalid password" })
           }
@@ -40,3 +40,4 @@ exports.getLogIn = (req, res, next) => {
   
   }
   
+  module.exports = {getLogInForm, generateAccessToken, getLogIn}

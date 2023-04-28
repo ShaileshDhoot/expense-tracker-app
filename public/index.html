@@ -24,7 +24,7 @@
     <button id="buyPremium">Buy Premium</button>
 
    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
+    <div id="message"></div>
 
     <form class="myForm col-lg-6 col-md-8 col-sm-10" id="tracker" action="/expense/add"  method="post">
       <label for="expenseAmount" class="form-label">Expense Amount :</label>
@@ -56,6 +56,8 @@
       </thead>
       <tbody></tbody>
     </table>
+
+    <ul id="leaderboard"></ul>
 
     <script>
       const form = document.getElementById("tracker");
@@ -124,14 +126,41 @@
         table.appendChild(fragment);
       }
 
+      function leaderboard(){
+        const newElement = document.createElement('input')
+        newElement.type = 'button'
+        newElement.value = 'LEADERBOARD'
+        newElement.onclick = async ()=>{
+          const token =await localStorage.getItem('token')
+          const userArray =await axios.get('/premium/showLeaderBoard', {headers:{"Authorization": token}})
+          console.log(userArray);  // will get array of users in form of object
+
+          const leaderBoardElement = document.getElementById('leaderboard')
+          leaderBoardElement.innerHTML += '<h1>Leader Board</h1>'
+          userArray.data.forEach((userDetails)=>{
+            leaderBoardElement.innerHTML += `<li>Name: ${userDetails.name} -- Total Expense : ${userDetails.totalExpense}</li>`
+          })
+        }
+
+        document.getElementById('message').appendChild(newElement)
+      }
+      
+
       window.addEventListener("DOMContentLoaded", () => {
         const token = localStorage.getItem("token");
+        const tokenParts = token.split('.');
+        const payload = JSON.parse(atob(tokenParts[1])); // inbuilt front end method to decode jwt token in frontend
+        const isPremium = payload.isPremiumUser
+        if(isPremium){
+          document.getElementById('buyPremium').style.visibility = "hidden"
+          document.getElementById('message').innerHTML = "You are a Premium User"
+          leaderboard()
+        }
         axios
           .get("/expense/all", { headers: { Authorization: token } })
           .then((response) => {
             response.data.forEach((element) => {
               addNewExpense(element);
-              console.log(token)
             });
           })
           .catch((err) => console.log(err));
@@ -162,11 +191,6 @@
             });
         }
       });
-      
-
-
-
-
 
       document.getElementById('buyPremium').onclick = (e)=>{
         e.preventDefault()
@@ -178,12 +202,20 @@
                 "key" : response.data.key_id,
                 "order_id" : response.data.order.id,
                 "handler": async (response)=>{
-                    await axios.post('/purchase/updateTransactionStatus',{
+                    const res = await axios.post('/purchase/updateTransactionStatus',{
                         order_id : options.order_id,
                         payment_id : response.razorpay_payment_id                       
                     },{ headers : {"Authorization": token}})
+          
                     alert('You are PREMIUM MEMBER now')
+                    document.getElementById('buyPremium').style.visibility = "hidden"
+                    document.getElementById('message').innerHTML = "You are a Premium User"  
+                    console.log(res)            
+                    localStorage.setItem('token', res.data.token)  
+                    leaderboard()             
                 }
+                 // 
+                       // console.log(response.body);
             }
             const stp1 = new Razorpay(options);
             stp1.open()
@@ -195,18 +227,6 @@
         })
       }
       
-
-      axios.get('/')
-        .then(response => {
-          const isPremiumUser = response.data.isPremiumUser;
-          const button = document.getElementById('buyPremium');
-          if (isPremiumUser!==null) {
-            button.innerText = 'Premium User';
-          } 
-        })
-        .catch(error => {
-          console.error(error);
-        });
 
 
       // function updateExpense(){

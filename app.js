@@ -6,6 +6,7 @@ const mainRoutes = require('./routes/main');
 const purchaseRoutes = require('./routes/purchaseRouter');
 const signUpRoutes = require('./routes/signUpRoutes');
 const logInRoutes = require('./routes/logInRoutes');
+const premiumRoutes = require('./routes/premiumRoutes')
 const sequelize = require('./util/database');
 const Expense = require('./model/expense');
 const User = require('./model/signUp');
@@ -19,6 +20,7 @@ app.use('/', signUpRoutes);
 app.use('/', logInRoutes);
 app.use('/expense', mainRoutes);
 app.use('/purchase', purchaseRoutes)
+app.use('/premium',premiumRoutes)
 // sequelize.authenticate()
 //   .then(() => {
 //     console.log('Connection to the database has been established successfully.');

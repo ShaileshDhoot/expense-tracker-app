@@ -5,6 +5,6 @@ const {getLogInForm,getLogIn} = require('../controller/loginController')
 
  router.get('/login', getLogInForm)
 
-router.post('/login', getLogIn)
+router.post('/postlogin', getLogIn)
 
 module.exports = router;

@@ -1,6 +1,8 @@
 
 const Razorpay = require('razorpay')
 const Order = require('../model/order')
+const loginController = require('../controller/loginController')
+
 
 exports.premiumMembership = async (req,res)=>{
     try{
@@ -24,44 +26,24 @@ exports.premiumMembership = async (req,res)=>{
     }
 }
 
-exports.updateTransactionStatus=(req,res)=>{
+exports.updateTransactionStatus= async (req,res)=>{
   try{
+   
+
+    const userId = req.user.id
     const {payment_id, order_id} = req.body;
-    Order.findOne({where:{orderid: order_id}}).then((order)=>{
-      order.update({paymentid: payment_id, status: "SUCCESSFULL"}).then(()=>{
-        req.user.update({isPremiumUser: true}).then(()=>{
-          return res.status(202).json({message: 'transaction successfull'})
-        }).catch(err=>console.log(err))       
-      }).catch(err=>console.log(err))     
-    }).catch(err=>console.log(err))
+    const order = await Order.findOne({where:{orderid: order_id}})
+      const prom1 = order.update({paymentid: payment_id, status: "SUCCESSFULL"})
+      const prom2 = req.user.update({isPremiumUser: true})
+      
+      Promise.all([prom1, prom2]).then(()=>{
+        return res.status(202).json({message: 'transaction successfull', token:loginController.generateAccessToken(userId, undefined, true)})
+      }).catch(err=>console.log(err))
+
   }catch(err){
     console.log(err);
     res.status(403).json({errpr: err, message:'something went wrong'})
   }
 }
 
-// //-----promise 
 
-// // premiumMembership=()=>{
-// //     const rzp = new Razorpay({
-// //         key_id : process.env.Razorpay_key_id,
-// //         key_secret : process.env.Razorpay_key_Secret
-// //     })
-// //     const amount = 2500;
-// //     rzp.orders.create({amount, currency: 'INR'}, (req,res)=>{
-// //         req.user.createOrder()
-// //         .then(()=>{
-
-// //         })
-// //         .catch(err=>console.log(err))
-// //     })
-    
-// // }
-
-// exports.updateTransactionState= async(req, res)=>{
-// try{
-
-// }catch (err){
-//     console.log(err);
-// }
-// }

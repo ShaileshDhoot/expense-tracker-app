@@ -34,7 +34,7 @@
 <body>
     <div class="container mt-4">
         <h1>Welcome to Expense Tracker Application</h1><br>
-        <form action="/login" method="post" >
+        <form action="/postlogin" method="post" >
           <div class="mb-3">
             <label for="email" class="form-label">Email:</label>
             <input type="email" class="form-control" id="email" name="email" required>
@@ -66,7 +66,7 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            axios.post('/login', {
+            axios.post('/postlogin', {
             email,
             password
             })

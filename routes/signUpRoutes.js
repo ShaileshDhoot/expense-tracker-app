@@ -1,13 +1,10 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
-
-
-const { getAllUser, getSignUpForm, postSignUp } = require('../controller/signupController');
 const router = express.Router();
 
-router.get('/', getAllUser)
+const { getAllUser, getSignUpForm, postSignUp } = require('../controller/signupController');
+
+
+router.get('/allUser',getAllUser)
 
 router.get('/signUpPage', getSignUpForm)
 

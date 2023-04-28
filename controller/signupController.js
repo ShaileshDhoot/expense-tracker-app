@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 exports.getAllUser = (req,res,next)=>{
     signUpData.findAll()
     .then(data=>{
-        res.json(data)
+       return  res.json(data)
     })
     .catch(err=>console.log(err))  
 }
@@ -32,26 +32,13 @@ exports.postSignUp = async (req,res,next)=>{
       return res.status(409).send({ message: "User already exists" });
     }
 
-    bcrypt.hash(password, 10, async (err, hash)=>{
-      if (err){
-        console.log(err);
-        res.status(500).send({ message: "Server error" });
-      }
-      else {
-        try {
-          const user = await signUpData.create({
-            name: name,
-            email: email,
-            password: hash
-          });
-
-          res.redirect('/login.html');
-        } catch (err) {
-          console.log(err);
-          res.status(500).send({ message: "Server error" });
-        }
-      }
+    const hash = bcrypt.hashSync(password, 10);
+    const user = await signUpData.create({
+      name: name,
+      email: email,
+      password: hash
     });
+    res.status(201).send({ message: "User created successfully" });
   } catch (err) {
     console.log(err);
     res.status(500).send({ message: "Server error" });
