@@ -63,7 +63,7 @@
         <tbody></tbody>
         </table>
 
-
+        <div id="showbtn"></div>
 
 
       <script>
@@ -119,26 +119,57 @@
 
 
       window.addEventListener("DOMContentLoaded", () => {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token"); 
+        shoeDownloadButton(token)
+        // axios
+        //   .get("/", { headers: { "Authorization": token } })
+        //   .then((response) => {
+        //     response.data.forEach((element) => {
+        //       addMonthData(element);
+        //       addYearData()   
+              
+        //     });
+        //   })
+        //   .catch((err) => console.log(err));
+      });
+    function shoeDownloadButton(token){
         const tokenParts = token.split('.');
         const payload = JSON.parse(atob(tokenParts[1])); // inbuilt front end method to decode jwt token in frontend
         const isPremium = payload.isPremiumUser
+        console.log(isPremium)
         if(isPremium){
-            const downloadBtn = document.createElement('button')
+            const downloadBtn = document.createElement('button')            
             downloadBtn.id = "download"
-            downloadBtn.value = "Download Report"        
-        }
-        axios
-          .get("/", { headers: { "Authorization": token } })
-          .then((response) => {
-            response.data.forEach((element) => {
-              addMonthData(element);
-              
-            });
-          })
-          .catch((err) => console.log(err));
-      });
-     
+            downloadBtn.textContent = "Download Report" 
+            const show = document.getElementById('showbtn')
+            show.appendChild(downloadBtn) 
+            
+            downloadBtn.addEventListener('click', download);    
+        }  
+    }
+
+   
+
+    function download(){
+        // axios.get('/....', { headers: {"Authorization" : token} })
+        // .then((response) => {
+        //     if(response.status === 201){
+        //         //the bcakend is essentially sending a download link
+        //         //  which if we open in browser, the file would download
+        //         var a = document.createElement("a")
+        //         a.href = response.data.fileUrl
+        //         a.download = 'myexpense.csv'
+        //         a.click()
+        //     } else {
+        //         throw new Error(response.data.message)
+        //     }
+
+        // })
+        // .catch((err) => {
+        //     showError(err)
+        // });
+        console.log('download button clicked');
+    }
       
 
       </script>
