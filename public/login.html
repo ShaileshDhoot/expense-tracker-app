@@ -46,7 +46,7 @@
           </div>
       
           <button type="submit" class="btn btn-primary" id="loginBtn" >Log In</button>
-
+          <button type="submit" class="btn btn-primary" id="forgot" >Forgot Password </button>
       
           <div class="mt-3">
             <span>Don't have an account?</span>
@@ -55,6 +55,16 @@
         </form>
       </div>
       <div id="error"></div>
+      <div id="email-form" style="display: none;">
+        <form id="email-form-body">
+          <h2>Reset Password</h2>
+          <div class="mb-3">
+            <label for="reset-email" class="form-label">Enter your email:</label>
+            <input type="email" class="form-control" id="reset-email" name="email" required>
+          </div>
+          <button type="submit" class="btn btn-primary" id="resetBtn">Reset Password</button>
+        </form>
+      </div>
 
 
       <script>
@@ -81,6 +91,30 @@
                 console.log(error, 'something is wrong with login html or controller code')
             });
         }
+
+        const forgotPasswordBtn = document.getElementById('forgot');
+        const emailForm = document.getElementById('email-form');
+
+        forgotPasswordBtn.addEventListener('click', () => {
+          emailForm.style.display = 'block';
+        });
+
+        const emailFormBody = document.getElementById('email-form-body');
+
+        emailFormBody.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const email = document.getElementById('reset-email').value;
+
+          try {
+            const response = await axios.post('/password/forgotpassword', { email });
+            console.log(response.data);
+            // Show success message to user
+          } catch (error) {
+            console.error(error);
+            // Show error message to user
+          }
+        });
       </script>
 </body>
 </html>

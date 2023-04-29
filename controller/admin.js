@@ -58,12 +58,14 @@ exports.deleteExpense = async (req, res) => {
   try {
     
     const id = req.params.id
+    console.log(id)
     const expense = await Data.findByPk(id);
     if (!expense) {
       return res.status(404).send("Expense not found");
     }
 
     const amount = expense.amount
+    console.log(amount)
     await expense.destroy()
     const user = await signUpData.findByPk(req.user.id);
     if (user) {

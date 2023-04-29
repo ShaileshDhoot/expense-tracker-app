@@ -10,8 +10,39 @@ const premiumRoutes = require('./routes/premiumRoutes')
 const sequelize = require('./util/database');
 const Expense = require('./model/expense');
 const User = require('./model/signUp');
-const Order = require('./model/order')
+const Order = require('./model/order');
+const Sib = require('sib-api-v3-sdk')
 
+require('dotenv').config()
+
+const client = Sib.ApiClient.instance;
+const apiKey = client.authentications['api-key']
+apiKey.apiKey = process.env.SENDINBLUE_API_KEY
+const transationalEmailApi = new Sib.TransactionalEmailsApi() 
+
+const sender = {
+    email: "shailesh.dhoot@yahoo.in",
+    name: "shailesh"
+}
+const receivers = [
+    {
+        email: "shaileshdhoot0@gmail.com",    
+    },
+]
+transationalEmailApi.sendTransacEmail({  
+    sender,
+    to : receivers,
+    subject: "please confirm email id",
+    textContent: `Expense Tracker {{params.role}} Under Construction`,
+    params: {
+        role: "Project"
+    },
+})
+.then(data=>{
+    console.log(data);
+})
+.catch(err=>console.log(err))
+  
 app.use(express.static('public'));
 app.use(express.json());
 app.use(cors());

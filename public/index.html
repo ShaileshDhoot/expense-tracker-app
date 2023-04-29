@@ -171,6 +171,7 @@
         const target = event.target;
         const row = target.parentNode.parentNode;
         const id = row.cells[0].textContent;
+        const token = localStorage.getItem("token");
         if (target.classList.contains("edit")) {
           const amount = row.cells[1].textContent;
           const description = row.cells[2].textContent;
@@ -181,7 +182,7 @@
           document.querySelector("#Category").value = category;
         } else if (target.classList.contains("delete")) {
           axios
-            .delete(`/expense/add/delete/${id}`)
+            .delete(`/expense/add/delete/${id}`,{ headers: { "Authorization": token } })
             .then((response) => {
               console.log("row deleted");
               table.deleteRow(row.rowIndex);
