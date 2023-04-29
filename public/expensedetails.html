@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXPENSE DETAILS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"
+        defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <div>
+        <h1> Day To Day Expenses </h1>
+    </div><br><br>
+    <div>
+        <h3>Monthly Report </h3>
+    </div>
+    
+    <table id="monthlyexpense" class="table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Income</th>            
+            <th>Expense Amount</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <br><br><br>
+      <div>
+        <h3> Yearly Report </h3>
+    </div>
+      <table id="yearlyexpense" class="table">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Income</th>
+            <th>Expense</th>
+            <th>Saving</th>        
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <br><br><br>
+      <div>
+        <h4> Notes Details </h4>
+    </div>
+
+        <table id="expensenotes" class="table">
+        <thead>
+            <tr>
+            <th>Date</th>
+            <th>Notes</th>       
+            </tr>
+        </thead>
+        <tbody></tbody>
+        </table>
+
+
+
+
+      <script>
+        function addMonthData(element) {
+        const table = document.getElementById("monthlyexpense");
+        const fragment = document.createDocumentFragment();
+        const row = document.createElement("tr");
+        const idCell = document.createElement("td");
+        const amountCell = document.createElement("td");
+        const descriptionCell = document.createElement("td");
+        const categoryCell = document.createElement("td");
+        const incomeCell = document.createElement("td");
+        const idText = document.createTextNode(element.id);
+        const descriptionText = document.createTextNode(element.description);
+        const categoryText = document.createTextNode(element.category);
+        const amountText = document.createTextNode(element.amount);
+        idCell.appendChild(idText);
+        amountCell.appendChild(amountText);
+        descriptionCell.appendChild(descriptionText);
+        categoryCell.appendChild(categoryText);
+        row.appendChild(idCell);
+        row.appendChild(amountCell);
+        row.appendChild(descriptionCell);
+        row.appendChild(categoryCell);
+        fragment.appendChild(row);
+        table.appendChild(fragment);
+      }
+
+      function addYearData(element) {
+        const table = document.getElementById("yearlyexpense");
+        const fragment = document.createDocumentFragment();
+        const row = document.createElement("tr");
+        const idCell = document.createElement("td");
+        const amountCell = document.createElement("td");
+        const descriptionCell = document.createElement("td");
+        const categoryCell = document.createElement("td");
+        const incomeCell = document.createElement("td");
+        const idText = document.createTextNode(element.id);
+        const descriptionText = document.createTextNode(element.description);
+        const categoryText = document.createTextNode(element.category);
+        const amountText = document.createTextNode(element.amount);
+        idCell.appendChild(idText);
+        amountCell.appendChild(amountText);
+        descriptionCell.appendChild(descriptionText);
+        categoryCell.appendChild(categoryText);
+        row.appendChild(idCell);
+        row.appendChild(amountCell);
+        row.appendChild(descriptionCell);
+        row.appendChild(categoryCell);
+        fragment.appendChild(row);
+        table.appendChild(fragment);
+      }
+
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem("token");
+        const tokenParts = token.split('.');
+        const payload = JSON.parse(atob(tokenParts[1])); // inbuilt front end method to decode jwt token in frontend
+        const isPremium = payload.isPremiumUser
+        if(isPremium){
+            const downloadBtn = document.createElement('button')
+            downloadBtn.id = "download"
+            downloadBtn.value = "Download Report"        
+        }
+        axios
+          .get("/", { headers: { "Authorization": token } })
+          .then((response) => {
+            response.data.forEach((element) => {
+              addMonthData(element);
+              
+            });
+          })
+          .catch((err) => console.log(err));
+      });
+     
+      
+
+      </script>
+    
+</body>
+</html>
