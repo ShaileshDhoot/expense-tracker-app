@@ -1,6 +1,7 @@
 const Data = require('../model/expense');
 const signUpData = require('../model/signUp')
 const sequelize = require('../util/database')
+
 exports.addExpense = async (req, res, next) => {
   try{
     let t // initialize the variable t
