@@ -1,8 +1,12 @@
+const AdminServices = require('../services/adminServices')
+const S3Services = require('../services/s3services')
 const Data = require('../model/expense');
 const signUpData = require('../model/signUp')
 const sequelize = require('../util/database')
 
-exports.addExpense = async (req, res, next) => {
+
+// add expense 
+const addExpense = async (req, res, next) => {
   try{
     let t // initialize the variable t
     const Amount = req.body.amount;
@@ -23,12 +27,10 @@ exports.addExpense = async (req, res, next) => {
     }, {transaction:t}) 
     
       const user = await signUpData.findByPk(req.user.id,{transaction:t} )      
-                    user.totalExpense += parseInt(Amount)
+      user.totalExpense += parseInt(Amount)
       await user.save({ transaction: t });  
-      await t.commit();   
-        
-      return res.status(201).json({message:' expense created'})     
-    
+      await t.commit();         
+      return res.status(201).json({message:' expense created'})      
       }catch(err) {
         console.log(err);
         return res.status(500).json({ message: 'Server issue' });
@@ -41,10 +43,27 @@ exports.addExpense = async (req, res, next) => {
    the entire group of operations is rolled back,
     and the database returns to its previous state before the transaction started
  */
+  
+// download expense
+const downloadExpenses = async (req,res) =>{
+  try{
+    const expenses =await AdminServices.getExpenses(req)
+    //console.log(expenses)
+    const stringifyExpenses = JSON.stringify(expenses)
+    //console.log(stringifyExpenses);
+    const userId = req.user.id;
+    const filename = `Expenses${userId}/${new Date()}.txt`
+    const fileURL = await S3Services.uploadToS3(stringifyExpenses,filename)
+    console.log(fileURL)
+    res.status(200).json({fileURL, success:true})
+  }catch(err){
+    console.log(err)
+  }
+}
 
 
-
-exports.getAllExpenses = async (req, res) => {
+// all expense
+const getAllExpenses = async (req, res) => {
   try {
     const expenses = await Data.findAll({ where: { userId: req.user.id } }); //
     return res.status(200).json(expenses);
@@ -54,8 +73,8 @@ exports.getAllExpenses = async (req, res) => {
   }
 };
 
-
-exports.deleteExpense = async (req, res) => {
+// delete expense
+const deleteExpense = async (req, res) => {
   try {
     
     const id = req.params.id
@@ -82,3 +101,4 @@ exports.deleteExpense = async (req, res) => {
 };
 
 
+module.exports = {addExpense, downloadExpenses, getAllExpenses ,deleteExpense}
