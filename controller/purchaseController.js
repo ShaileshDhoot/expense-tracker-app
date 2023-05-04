@@ -7,8 +7,8 @@ const loginController = require('../controller/loginController')
 exports.premiumMembership = async (req,res)=>{
     try{
         const stp = new Razorpay({
-                key_id : 'rzp_test_NQauMjZ3I0BKfz',
-                key_secret : 'gvZmWz3xnxU6bFcv2XL9IGgH'
+                key_id : process.env.RAZOR_PAY_KEY_ID,
+                key_secret : RAZOR_PAY_KEY_SECRET
         })
         const amount = 2500;
         stp.orders.create({amount, currency: 'INR'}, (err,order)=>{
