@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 exports.getAllUser = (req, res, next) => {
   signUpData.findAll()
     .then(data => {
-      res.json(data);
+      res.status(200).json(data);
     })
     .catch(err => {
       console.log(err);
