@@ -1,14 +1,17 @@
 const signUpData = require('../model/signUp')
 const bcrypt = require('bcrypt')
 
-
-exports.getAllUser = (req,res,next)=>{
-    signUpData.findAll()
-    .then(data=>{
-       return  res.json(data)
+exports.getAllUser = (req, res, next) => {
+  signUpData.findAll()
+    .then(data => {
+      res.json(data);
     })
-    .catch(err=>console.log(err))  
-}
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: 'An error occurred' });
+    });
+};
+
 
 // exports.getSignUpForm = (req,res,next)=>{
 //     res.sendFile('signup.html', { root: './public' })
