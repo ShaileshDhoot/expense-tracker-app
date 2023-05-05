@@ -4,10 +4,7 @@ const User = require('../model/signUp');
 const authMiddleware = async (req, res, next) => {
   try {
     const token = req.header('Authorization')
-    console.log(`Token: ${token}`);
-    const user = jwt.verify(token, 'secretkey');// this is user object
-    console.log(user)
-    console.log('userId is ',user.userId);
+    const user = jwt.verify(token, 'secretkey');
      User.findByPk(user.userId)
      .then((user)=>{
       req.user = user;

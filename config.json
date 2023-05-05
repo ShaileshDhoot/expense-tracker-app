@@ -1,0 +1,24 @@
+{
+    "development": {
+      "username": "shailesh",
+      "password": "shailesh",
+      "database": "Expensetracker",
+      "host": "database-1.cpefwitfkvxi.us-east-1.rds.amazonaws.com",
+      "dialect": "mysql"
+    },
+    "test": {
+      "username": "shailesh",
+      "password": "shailesh",
+      "database": "Expensetracker",
+      "host": "database-1.cpefwitfkvxi.us-east-1.rds.amazonaws.com",
+      "dialect": "mysql"
+    },
+    "production": {
+      "username": "shailesh",
+      "password": "shailesh",
+      "database": "Expensetracker",
+      "host": "database-1.cpefwitfkvxi.us-east-1.rds.amazonaws.com",
+      "dialect": "mysql"
+    }
+  }
+  
