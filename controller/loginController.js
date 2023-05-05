@@ -3,9 +3,9 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 
-const getLogInForm = (req,res,next)=>{
-    res.sendFile('login.html', { root: './public' })
-}
+// const getLogInForm = (req,res,next)=>{
+//     res.sendFile('login.html', { root: './public' })
+// }
 
 const generateAccessToken=(id, name, isPremiumUser)=>{
   return jwt.sign({userId: id, name:name, isPremiumUser},'secretkey')
@@ -40,4 +40,4 @@ const getLogIn = (req, res, next) => {
   
   }
   
-  module.exports = {getLogInForm, generateAccessToken, getLogIn}
+  module.exports = { generateAccessToken, getLogIn}

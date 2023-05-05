@@ -73,7 +73,7 @@
             })
             .then(response => {             
                 localStorage.setItem('token', response.data.token);
-                window.location.href = 'http://34.227.25.232:3000/index.html';
+                window.location.href = '/index.html';
             })
             .catch(error => {
                 // const errorMessage = error.response.data.message;
@@ -86,7 +86,7 @@
         const forgotButton = document.getElementById('forgot')
         forgotButton.addEventListener('click',forgotpassword)
         function forgotpassword() {
-         window.location.href = "http://34.227.25.232:3000/ForgotPassword.html"
+         window.location.href = "/ForgotPassword.html"
         };
       </script>
 </body>

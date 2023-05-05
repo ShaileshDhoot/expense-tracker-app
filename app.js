@@ -28,7 +28,7 @@ const morgan = require('morgan')
 // get config vars
 dotenv.config();
   
-app.use(express.static('public'));
+// app.use(express.static('public'));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -41,13 +41,11 @@ app.use('/expense', mainRoutes);
 app.use('/purchase', purchaseRoutes)
 app.use('/premium',premiumRoutes)
 app.use('/password', resetPasswordRoutes)
-// sequelize.authenticate()
-//   .then(() => {
-//     console.log('Connection to the database has been established successfully.');
-//   })
-//   .catch((err) => {
-//     console.error('Unable to connect to the database:', err);
-//   });
+
+app.use((req,res)=>{
+    console.log((req.url));
+    res.sendFile(path.join(__dirname, `public/${req.url}`))
+})
 
 // association of models (tables)
 User.hasMany(Expense);
