@@ -6,8 +6,7 @@ const fs = require('fs')
 //routes
 const mainRoutes = require('./routes/main');
 const purchaseRoutes = require('./routes/purchaseRouter');
-const signUpRoutes = require('./routes/signUpRoutes');
-const logInRoutes = require('./routes/logInRoutes');
+const userRoutes = require('./routes/userRoutes');
 const premiumRoutes = require('./routes/premiumRoutes')
 const resetPasswordRoutes = require('./routes/resetPasswordRoutes')
 
@@ -27,25 +26,31 @@ const morgan = require('morgan')
 
 // get config vars
 dotenv.config();
-  
-// app.use(express.static('public'));
-app.use(express.json());
+ 
+
 app.use(cors());
+app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet())
+// app.use(helmet())
 app.use(compression())
 app.use(morgan('combined', {stream: accessLogStream}))
-app.use('/', signUpRoutes);
-app.use('/', logInRoutes);
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', userRoutes);
 app.use('/expense', mainRoutes);
 app.use('/purchase', purchaseRoutes)
 app.use('/premium',premiumRoutes)
 app.use('/password', resetPasswordRoutes)
 
-app.use((req,res)=>{
-    console.log((req.url));
-    res.sendFile(path.join(__dirname, `public/${req.url}`))
-})
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, `public/${req.url}`), (err) => {
+    if (err) {
+      res.status(404).send('File not found');
+    }
+  });
+});
 
 // association of models (tables)
 User.hasMany(Expense);

@@ -100,7 +100,7 @@
         };
         //console.log(expenseData)
         axios
-          .post("http://34.227.25.232:3000/expense/add", expenseData, {
+          .post("/expense/add", expenseData, {
             headers: { Authorization: token }
           })
           .then((response) => {
@@ -191,7 +191,7 @@
         const itemsPerPage = event.target.value;
         const token = localStorage.getItem("token")
         localStorage.setItem(storageKey, itemsPerPage); // Save to local storage
-        axios.get("http://34.227.25.232:3000/expense/all", { headers: { Authorization: token } })
+        axios.get("/expense/all", { headers: { Authorization: token } })
           .then((response) => {
             renderExpenses(response);
           })
@@ -225,7 +225,7 @@
           document.getElementById('message').innerHTML = "You are a Premium User"
           leaderboard()
         }
-        axios.get("http://34.227.25.232:3000/expense/all", { headers: { Authorization: token } })
+        axios.get("/expense/all", { headers: { Authorization: token } })
           .then((response) => {
             renderPaginationButtons(response);
             renderExpenses(response);
@@ -248,7 +248,7 @@
         newElement.value = 'LEADERBOARD'
         newElement.onclick = async ()=>{
           const token =await localStorage.getItem('token')
-          const userArray =await axios.get('http://34.227.25.232:3000/premium/showLeaderBoard', {headers:{"Authorization": token}})
+          const userArray =await axios.get('/premium/showLeaderBoard', {headers:{"Authorization": token}})
           console.log(userArray);  // will get array of users in form of object
 
           const leaderBoardElement = document.getElementById('leaderboard')
@@ -256,7 +256,7 @@
             // If the leaderboard element doesn't have any child nodes,
             // it means that the leaderboard hasn't been displayed yet,
             // so we can fetch the data and display it.
-            axios.get('http://34.227.25.232:3000/premium/showLeaderBoard', {headers:{"Authorization": token}})
+            axios.get('/premium/showLeaderBoard', {headers:{"Authorization": token}})
               .then((response) => {
                 const userArray = response.data;
                 console.log(userArray); // will get array of users in form of object
@@ -274,7 +274,7 @@
               // If the leaderboard element already has child nodes,
               // it means that the leaderboard has already been displayed,
               // so we can simply replace the previous data with the new data.
-              axios.get('http://34.227.25.232:3000/premium/showLeaderBoard', {headers:{"Authorization": token}})
+              axios.get('/premium/showLeaderBoard', {headers:{"Authorization": token}})
                 .then((response) => {
                   const userArray = response.data;
                   console.log(userArray); // will get array of users in form of object
@@ -314,7 +314,7 @@
           document.querySelector("#Category").value = category;
         } else if (target.classList.contains("delete")) {
           axios
-            .delete(`http://34.227.25.232:3000/expense/add/delete/${id}`,{ headers: { "Authorization": token } })
+            .delete(`/expense/add/delete/${id}`,{ headers: { "Authorization": token } })
             .then((response) => {
               console.log("row deleted");
               table.deleteRow(row.rowIndex);
@@ -329,13 +329,13 @@
         e.preventDefault()
         const token = localStorage.getItem('token')
         console.log('Premium button clicked')
-        axios.get('http://34.227.25.232:3000/purchase/premiumMembership',{headers: {"Authorization": token}})
+        axios.get('/purchase/premiumMembership',{headers: {"Authorization": token}})
         .then(response=>{
             const options = {
                 "key" : response.data.key_id,
                 "order_id" : response.data.order.id,
                 "handler": async (response)=>{
-                    const res = await axios.post('http://34.227.25.232:3000/purchase/updateTransactionStatus',{
+                    const res = await axios.post('/purchase/updateTransactionStatus',{
                         order_id : options.order_id,
                         payment_id : response.razorpay_payment_id                       
                     },{ headers : {"Authorization": token}})
