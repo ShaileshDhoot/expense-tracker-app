@@ -35,7 +35,6 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(helmet())
 app.use(compression())
 app.use(morgan('combined', {stream: accessLogStream}))
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', userRoutes);
 app.use('/expense', mainRoutes);
@@ -45,16 +44,7 @@ app.use('/password', resetPasswordRoutes)
 
 
 app.use((req, res, next) => {
-  if (req.url === '/login') {
-    console.log('middleware login');
-    res.sendFile(path.join(__dirname, 'public/login.html'));
-  } else if (req.url === '/signup') {
-    console.log('middleware signup');
-    res.sendFile(path.join(__dirname, 'public/signup.html'));
-  } else {
-    console.log('middleware next');
-    next(); // Pass control to the next middleware
-  }
+  res.sendFile(path.join(__dirname,`public/${req.url}`))
 });
 
 

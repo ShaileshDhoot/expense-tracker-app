@@ -11,6 +11,7 @@
         integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"
         defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="signup.js" defer></script>
     <!-- <link rel="stylesheet" href="public/main/css/style.css"> -->
 </head>
 <body>
@@ -39,24 +40,7 @@
           </div>
         </form>
       </div>
-      
-      <script>
-          document.querySelector('#signup-form').addEventListener('submit', (event) =>{
-            event.preventDefault(); // prevent default form submission
-            const fullName = document.querySelector('#name').value;
-            const emailId = document.querySelector('#email').value;
-            const password = document.querySelector('#password').value;
-            axios.post('http://localhost:3000/signUp', {
-                    name: fullName,
-                    email: emailId,
-                    password: password
-                })
-                .then((res)=>{
-                    window.location.href = 'http://localhost:3000/login.html'
-                })
-                .catch(err=>console.log(err))
-        });
-      </script>
+  
       
 </body>
 </html>
