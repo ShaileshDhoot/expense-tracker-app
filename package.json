@@ -20,5 +20,24 @@
     "sib-api-v3-sdk": "^8.5.0",
     "stripe": "^12.3.0",
     "uuid": "^9.0.0"
-  }
+  },
+  "name": "expenseproject",
+  "description": "Expense Manager",
+  "version": "1.0.0",
+  "main": "app.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "start",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShaileshDhoot/expense-tracker-app.git"
+  },
+  "author": "shailesh dhoot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShaileshDhoot/expense-tracker-app/issues"
+  },
+  "homepage": "https://github.com/ShaileshDhoot/expense-tracker-app#readme"
 }

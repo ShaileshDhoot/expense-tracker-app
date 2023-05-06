@@ -44,13 +44,19 @@ app.use('/premium',premiumRoutes)
 app.use('/password', resetPasswordRoutes)
 
 
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, `public/${req.url}`), (err) => {
-    if (err) {
-      res.status(404).send('File not found');
-    }
-  });
+app.use((req, res, next) => {
+  if (req.url === '/login') {
+    console.log('middleware login');
+    res.sendFile(path.join(__dirname, 'public/login.html'));
+  } else if (req.url === '/signup') {
+    console.log('middleware signup');
+    res.sendFile(path.join(__dirname, 'public/signup.html'));
+  } else {
+    console.log('middleware next');
+    next(); // Pass control to the next middleware
+  }
 });
+
 
 // association of models (tables)
 User.hasMany(Expense);
