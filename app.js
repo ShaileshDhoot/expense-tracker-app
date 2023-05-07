@@ -44,6 +44,7 @@ app.use('/password', resetPasswordRoutes)
 
 
 app.use((req, res, next) => {
+  console.log(req.url)
   res.sendFile(path.join(__dirname,`public/${req.url}`))
 });
 

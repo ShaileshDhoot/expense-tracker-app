@@ -61,7 +61,7 @@ function addMonthData(element) {
     try{
       const token = await localStorage.getItem("token"); 
        showDownloadButton(token)
-      const response = await axios.get("http://localhost:3000/expense/all", { headers: { "Authorization": token } })          
+      const response = await axios.get("http://34.227.25.232/expense/all", { headers: { "Authorization": token } })          
       response.data.forEach((element) => {
           addMonthData(element);            
       })
@@ -96,7 +96,7 @@ async function download(){
     //console.log('download button clicked');
     const token = localStorage.getItem('token')
     //console.log(token);
-    const response = await axios.get('http://localhost:3000/expense/download', { headers: {"Authorization" : token} })        
+    const response = await axios.get('http://34.227.25.232/expense/download', { headers: {"Authorization" : token} })        
     //console.log(response)
     var a = document.createElement("a")
     a.href = response.data.fileURL

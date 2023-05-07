@@ -6,7 +6,7 @@ function forgotpassword(e) {
         email: form.get("email"),
     }
     
-    axios.post('http://localhost:3000/password/forgotpassword',userDetails).then(response => {
+    axios.post('http://34.227.25.232/password/forgotpassword',userDetails).then(response => {
         if(response.status === 202){
             document.body.innerHTML += '<div style="color:red;">Mail Successfuly sent <div>'
         } else {

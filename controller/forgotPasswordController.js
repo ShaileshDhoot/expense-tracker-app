@@ -69,6 +69,7 @@ const resetpassword = (req, res) => {
                                         <input name="newpassword" type="password" required></input>
                                         <button>reset password</button>
                                     </form>
+                                    
                                 </html>`
                                 )
             res.end()
