@@ -1,13 +1,14 @@
 document.getElementById('loginBtn').addEventListener('click', logIn)
-function logIn (){
+function logIn (e){
+    e.preventDefault()
     console.log('login function called')
     const loginDetails = {
         email: document.getElementById("email").value,
         password: document.getElementById("password").value
 
     }
-    
-    axios.post('http://34.227.25.232/postlogin',loginDetails)
+    console.log(loginDetails)
+    axios.post('http://3.83.64.232/postlogin',loginDetails)
     .then(response => { 
       console.log('login post api');
         localStorage.setItem('token', response.data.token);

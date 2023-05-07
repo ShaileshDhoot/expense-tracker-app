@@ -17,7 +17,7 @@ function addExpense(e) {
   };
   //console.log(expenseData)
   axios
-    .post("http://34.227.25.232/expense/add", expenseData, {
+    .post("http://3.83.64.232/expense/add", expenseData, {
       headers: { Authorization: token }
     })
     .then((response) => {
@@ -108,7 +108,7 @@ itemsPerPageSelect.addEventListener('change', (event) => {
   const itemsPerPage = event.target.value;
   const token = localStorage.getItem("token")
   localStorage.setItem(storageKey, itemsPerPage); // Save to local storage
-  axios.get("http://34.227.25.232/expense/all", { headers: { Authorization: token } })
+  axios.get("http://3.83.64.232/expense/all", { headers: { Authorization: token } })
     .then((response) => {
       renderExpenses(response);
     })
@@ -132,40 +132,84 @@ function renderExpenses(response = { data: [] }) {
 }
 
 
+// window.addEventListener("DOMContentLoaded", () => {
+//   const token = localStorage.getItem("token");
+//   const tokenParts = token.split('.');
+//   const payload = JSON.parse(atob(tokenParts[1])); // inbuilt front end method to decode jwt token in frontend
+//   const isPremium = payload.isPremiumUser
+//   if(isPremium){
+//     document.getElementById('buyPremium').style.visibility = "hidden"
+//     document.getElementById('message').innerHTML = "You are a Premium User"
+//     leaderboard()
+//   }
+//   axios.get("http://3.83.64.232/expense/all", { headers: { Authorization: token } })
+//     .then((response) => {
+//       renderPaginationButtons(response);
+//       renderExpenses(response);
+//     })
+//     .catch((err) => console.log(err));
+// });
+//  // ----*** to decode jwt token in js file
+// // function parseJwt (token) {
+// //     var base64Url = token.split('.')[1];
+// //     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+// //     var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+// //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+// //     }).join(''));
+
+// //     return JSON.parse(jsonPayload);
+// // }
+
 window.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   const tokenParts = token.split('.');
-  const payload = JSON.parse(atob(tokenParts[1])); // inbuilt front end method to decode jwt token in frontend
-  const isPremium = payload.isPremiumUser
+  const payload = JSON.parse(new TextDecoder().decode(base64UrlToUint8Array(tokenParts[1]))); // decode JWT token using TextDecoder()
+  const isPremium = payload.isPremiumUser;
   if(isPremium){
-    document.getElementById('buyPremium').style.visibility = "hidden"
-    document.getElementById('message').innerHTML = "You are a Premium User"
-    leaderboard()
+    document.getElementById('buyPremium').style.visibility = "hidden";
+    document.getElementById('message').innerHTML = "You are a Premium User";
+    leaderboard();
   }
-  axios.get("http://34.227.25.232/expense/all", { headers: { Authorization: token } })
+  axios.get("http://3.83.64.232/expense/all", { headers: { Authorization: token } })
     .then((response) => {
       renderPaginationButtons(response);
       renderExpenses(response);
     })
     .catch((err) => console.log(err));
 });
- // ----*** to decode jwt token in js file
-// function parseJwt (token) {
-//     var base64Url = token.split('.')[1];
-//     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-//     var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-//         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-//     }).join(''));
 
-//     return JSON.parse(jsonPayload);
-// }
+// helper function to convert base64url to uint8array
+function base64UrlToUint8Array(base64Url) {
+  let padding = '='.repeat((4 - base64Url.length % 4) % 4);
+  let base64 = (base64Url + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+
+  let rawData = window.atob(base64);
+  let outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
+}
+
+
+
+
+
+
+
+
+
 function leaderboard(){
   const newElement = document.createElement('input')
   newElement.type = 'button'
   newElement.value = 'LEADERBOARD'
   newElement.onclick = async ()=>{
     const token =await localStorage.getItem('token')
-    const userArray =await axios.get('http://34.227.25.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
+    const userArray =await axios.get('http://3.83.64.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
     console.log(userArray);  // will get array of users in form of object
 
     const leaderBoardElement = document.getElementById('leaderboard')
@@ -173,7 +217,7 @@ function leaderboard(){
       // If the leaderboard element doesn't have any child nodes,
       // it means that the leaderboard hasn't been displayed yet,
       // so we can fetch the data and display it.
-      axios.get('http://34.227.25.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
+      axios.get('http://3.83.64.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
         .then((response) => {
           const userArray = response.data;
           console.log(userArray); // will get array of users in form of object
@@ -191,7 +235,7 @@ function leaderboard(){
         // If the leaderboard element already has child nodes,
         // it means that the leaderboard has already been displayed,
         // so we can simply replace the previous data with the new data.
-        axios.get('http://34.227.25.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
+        axios.get('http://3.83.64.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
           .then((response) => {
             const userArray = response.data;
             console.log(userArray); // will get array of users in form of object
@@ -231,7 +275,7 @@ table.addEventListener("click", (event) => {
     document.querySelector("#Category").value = category;
   } else if (target.classList.contains("delete")) {
     axios
-      .delete(`http://34.227.25.232/expense/add/delete/${id}`,{ headers: { "Authorization": token } })
+      .delete(`http://3.83.64.232/expense/add/delete/${id}`,{ headers: { "Authorization": token } })
       .then((response) => {
         console.log("row deleted");
         table.deleteRow(row.rowIndex);
@@ -246,13 +290,13 @@ document.getElementById('buyPremium').onclick = (e)=>{
   e.preventDefault()
   const token = localStorage.getItem('token')
   console.log('Premium button clicked')
-  axios.get('http://34.227.25.232/purchase/premiumMembership',{headers: {"Authorization": token}})
+  axios.get('http://3.83.64.232/purchase/premiumMembership',{headers: {"Authorization": token}})
   .then(response=>{
       const options = {
           "key" : response.data.key_id,
           "order_id" : response.data.order.id,
           "handler": async (response)=>{
-              const res = await axios.post('http://34.227.25.232/purchase/updateTransactionStatus',{
+              const res = await axios.post('http://3.83.64.232/purchase/updateTransactionStatus',{
                   order_id : options.order_id,
                   payment_id : response.razorpay_payment_id                       
               },{ headers : {"Authorization": token}})
@@ -281,7 +325,7 @@ document.getElementById('buyPremium').onclick = (e)=>{
 //     const description = document.querySelector('.description').value;
 //     const category = document.querySelector('#Category').value;
 
-//     axios.put(`http://34.227.25.232/expense-tracker/${id}`, {
+//     axios.put(`http://3.83.64.232/expense-tracker/${id}`, {
 //             Expense_Amount: amount,
 //             Description: description,
 //             Category: category
