@@ -27,8 +27,7 @@ exports.premiumMembership = async (req,res)=>{
 }
 
 exports.updateTransactionStatus= async (req,res)=>{
-  try{
-   
+  try{  
 
     const userId = req.user.id
     const {payment_id, order_id} = req.body;

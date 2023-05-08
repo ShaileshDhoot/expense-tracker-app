@@ -23,6 +23,7 @@
   <body class="container">
     <h2 class="heading">Expense Tracker</h2>
     <button id="buyPremium">Buy Premium</button><br>
+
     <button onclick="expenseDetails()">Expense Details</button>
    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <div id="message"></div>
@@ -31,7 +32,7 @@
       <div class="row">
         <div class="col-md-4">
           <label for="expenseAmount" class="form-label">Expense Amount:</label>
-          <input type="text" name="expenseAmount" class="number form-control" required/>
+          <input type="number" name="expenseAmount" class="number form-control" required/>
         </div>
         <div class="col-md-4">
           <label for="expenseDescription" class="form-label">Description:</label>
@@ -78,8 +79,14 @@
       </select>
     </div>
     <div id="pagination"></div>
-
-
+    <button id="logoutBtn">Logout</button>
+    <script>
+      const logoutBtn = document.getElementById('logoutBtn')
+      logoutBtn.addEventListener('click', () => {
+        localStorage.clear()
+        window.location.href = 'login.html';
+      });
+    </script>
   </body>
 </html>
 

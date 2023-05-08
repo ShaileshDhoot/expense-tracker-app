@@ -25,10 +25,9 @@
   "description": "Expense Manager",
   "version": "1.0.0",
   "main": "app.js",
-  "devDependencies": {},
   "scripts": {
     "test": "start",
-    "start": "nodemon app.js"
+    "run": "nodemon app.js"
   },
   "repository": {
     "type": "git",
