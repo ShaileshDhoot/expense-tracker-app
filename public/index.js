@@ -299,8 +299,11 @@ document.getElementById('buyPremium').onclick = (e)=>{
               const res = await axios.post('http://3.83.64.232/purchase/updateTransactionStatus',{
                   order_id : options.order_id,
                   payment_id : response.razorpay_payment_id                       
-              },{ headers : {"Authorization": token}})
-    
+              },{ 
+                headers : {"Authorization": token},
+                timeout: 5000
+              })
+              console.log('logging after post request success')
               alert('You are PREMIUM MEMBER now')
               document.getElementById('buyPremium').style.visibility = "hidden"
               document.getElementById('message').innerHTML = "You are a Premium User"  

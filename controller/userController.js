@@ -45,21 +45,21 @@ const postLogIn = (req, res, next) => {
         bcrypt.compare(password, user.password, (err, result) => {
           if (err) {
             console.log(err)
-            res.status(500).send({ message: "Server error" })
+            res.status(500).send({ alert: "Server error" })
           } else if (result) {
            // console.log('success')
-            return res.status(200).send({ token: generateAccessToken(user.id, user.name, user.isPremiumUser)});            
+            return res.status(200).send({alert: "welcome", token: generateAccessToken(user.id, user.name, user.isPremiumUser)});            
           } else {
-            res.status(401).send({ message: "Invalid password" })
+            res.status(401).send({ alert: "Invalid password" })
           }
         })
       } else {
-        res.status(404).send({ message: "User nee hai" })
+        res.status(404).send({ alert: "User does not exist" })
       }
     })
     .catch(err => {
       console.log(err);
-      res.status(500).send({ message: "Server error" })
+      res.status(500).send({ alert: "Server error" })
     }) 
   
   }
