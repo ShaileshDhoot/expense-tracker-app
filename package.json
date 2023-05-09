@@ -1,0 +1,42 @@
+{
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.321.1",
+    "@aws-sdk/util-utf8-node": "^3.259.0",
+    "@sendgrid/mail": "^7.7.0",
+    "aws-sdk": "^2.1368.0",
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "helmet": "^6.1.5",
+    "jsonwebtoken": "^9.0.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.2.3",
+    "nodemon": "^2.0.22",
+    "razorpay": "^2.8.6",
+    "sequelize": "^6.31.0",
+    "sib-api-v3-sdk": "^8.5.0",
+    "stripe": "^12.3.0",
+    "uuid": "^9.0.0"
+  },
+  "name": "expenseproject",
+  "description": "Expense Manager",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "start",
+    "run": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShaileshDhoot/expense-tracker-app.git"
+  },
+  "author": "shailesh dhoot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShaileshDhoot/expense-tracker-app/issues"
+  },
+  "homepage": "https://github.com/ShaileshDhoot/expense-tracker-app#readme"
+}
