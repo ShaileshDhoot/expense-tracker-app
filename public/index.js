@@ -21,23 +21,7 @@ function addExpense(e) {
       headers: { Authorization: token }
     })
     .then((response) => {
-      window.addEventListener("DOMContentLoaded", () => {
-        const token = localStorage.getItem("token");
-        const tokenParts = token.split('.');
-        const payload = JSON.parse(new TextDecoder().decode(base64UrlToUint8Array(tokenParts[1]))); // decode JWT token using TextDecoder()
-        const isPremium = payload.isPremiumUser;
-        if(isPremium){
-          document.getElementById('buyPremium').style.visibility = "hidden";
-          document.getElementById('message').innerHTML = "You are a Premium User";
-          leaderboard();
-        }
-        axios.get("http://3.83.64.232/expense/all", { headers: { Authorization: token } })
-          .then((response) => {
-            renderPaginationButtons(response);
-            renderExpenses(response);
-          })
-          .catch((err) => console.log(err));
-      });
+     response.json({alert: 'expense added'})
     })
     .catch((err) => console.log(err));
 }
