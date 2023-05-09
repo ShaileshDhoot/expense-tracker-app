@@ -1,0 +1,90 @@
+const form = document.getElementById('tracker');
+form.addEventListener('submit', addExpense);
+function addExpense(){
+    const token = localStorage.getItem('token')          
+    if(token){
+        console.log(token,'add expense')
+    }else{
+        console.log('can get token')
+        return
+    }
+    
+    const expenseData={
+        amount : document.querySelector('.number').value,
+        description : document.querySelector('.description').value,
+        category : document.querySelector('.category').value
+    }  
+    //console.log(expenseData)         
+    axios.post('/expense/add', expenseData,{headers: {"Authorization":token}})
+        .then(()=>{
+            
+            window.location.href = '/index.html';
+        })
+        .catch(err=>console.log(err))
+}     
+
+document.addEventListener('DOMContentLoaded', function() {            
+    const table = document.getElementById('expenseTable');
+    const fragment = document.createDocumentFragment();
+    const token = localStorage.getItem('token')
+    //console.log(token)
+    axios.get('/expense/all', {headers: {"Authorization": token}})
+    .then((response)=> {
+        response.data.forEach(function(element) {
+            const row = document.createElement('tr');
+            const idCell = document.createElement('td');
+            const amountCell = document.createElement('td');
+            const descriptionCell = document.createElement('td');
+            const categoryCell = document.createElement('td');
+            const editCell = document.createElement('td');
+            const deleteCell = document.createElement('td');
+            const editButton = document.createElement('button');
+            const deleteButton = document.createElement('button');
+            const idText = document.createTextNode(element.id);
+            const amountText = document.createTextNode(element.amount);
+            const descriptionText = document.createTextNode(element.description);
+            const categoryText = document.createTextNode(element.category);
+            const editText = document.createTextNode('Edit');
+            const deleteText = document.createTextNode('Delete');
+            editButton.classList.add('btn', 'edit', 'btn-primary');
+            deleteButton.classList.add('btn', 'delete', 'btn-danger');
+            editButton.appendChild(editText);
+            deleteButton.appendChild(deleteText);
+            idCell.appendChild(idText);
+            amountCell.appendChild(amountText);
+            descriptionCell.appendChild(descriptionText);
+            categoryCell.appendChild(categoryText);
+            editCell.appendChild(editButton);
+            deleteCell.appendChild(deleteButton);
+            row.appendChild(idCell);
+            row.appendChild(amountCell);
+            row.appendChild(descriptionCell);
+            row.appendChild(categoryCell);
+            row.appendChild(editCell);
+            row.appendChild(deleteCell);
+            fragment.appendChild(row);
+           
+        });
+        table.appendChild(fragment);
+    }).catch(err=>console.log(err))
+});        
+
+// function updateExpense(){
+//     const amount = document.querySelector('.number').value;
+//     const description = document.querySelector('.description').value;
+//     const category = document.querySelector('#Category').value;
+
+//     axios.put(`/expense-tracker/${id}`, {
+//             Expense_Amount: amount,
+//             Description: description,
+//             Category: category
+//         })
+//         .then(response => {
+//             console.log('updated in db')
+//         })
+//         .catch(err => {
+//             console.log(err);
+//         });
+// }
+
+

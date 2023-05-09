@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXPENSE DETAILS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"
+        defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="expenseDetails.js" defer></script>
+        <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div>
+        <h1>  Expenses Statistics </h1>
+    </div><br><br>
+ 
+    
+    <table>
+      <tr>
+        <td>
+          <select id="monthSelect" class="form-select">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </td>
+        <td>
+          <button id="monthlyBtn" class="btn btn-primary">Show Monthly Expenses</button>
+        </td>
+      </tr>
+    </table>
+    
+      <br><br><br>
+      <table id="yearlyexpense" class="table">
+        <button id="yearlyBtn" class="btn btn-primary">Show Yearly Expenses</button>
+        <thead>
+         
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <br><br><br>
+     
+
+      
+
+        <div id="showbtn"></div>
+
+
+    
+</body>
+</html>

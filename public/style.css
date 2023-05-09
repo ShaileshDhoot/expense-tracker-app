@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Add padding to container */
+  .container {
+    padding: 1rem;
+  }
+  
+  /* Style table headers */
+  .table thead {
+    background-color: #f8f9fa;
+    color: #212529;
+  }
+  
+  /* Style table rows */
+  .table tbody tr:nth-of-type(even) {
+    background-color: #f8f9fa;
+  }
+  
+  /* Style form inputs */
+  .form-control {
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #212529;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+  }
+  
+  /* Style form labels */
+  .form-label {
+    font-weight: bold;
+  }
+  
+  /* Style form submit button */
+  .btn {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  
+  .btn:hover {
+    background-color: #0b5ed7;
+    border-color: #0b5ed7;
+  }

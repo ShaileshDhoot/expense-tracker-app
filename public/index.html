@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body class="container">
+    <h2 class="heading">Expense Tracker</h2>
+    <button id="buyPremium">Buy Premium</button><br>
+
+    <button onclick="expenseDetails()">Expense Details</button>
+   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <div id="message"></div>
+
+    <form class="myForm" id="tracker" action="/expense/add" method="post">
+      <div class="row">
+        <div class="col-md-4">
+          <label for="expenseAmount" class="form-label">Expense Amount:</label>
+          <input type="number" name="expenseAmount" class="number form-control" required/>
+        </div>
+        <div class="col-md-4">
+          <label for="expenseDescription" class="form-label">Description:</label>
+          <input type="text" name="expenseDescription" class="description form-control" placeholder="Description" required/>
+        </div>
+        <div class="col-md-4">
+          <label for="expenseCategory" class="form-label">Category:</label>
+          <select name="expenseCategory" id="Category" class="item form-select category" required>
+            <option value="Others">Others</option>
+            <option value="Rent">Rent</option>
+            <option value="Loan">Loan</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Investment">Investment</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Travel">Travel</option>
+          </select>
+        </div>
+      </div><br>
+      <button type="submit" id="addExpenseButton" class="btn add btn-primary button">Add</button>
+    </form>
+    
+
+    <table id="expenseTable" class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Expense Amount</th>
+          <th>Description</th>
+          <th>Category</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <ul id="leaderboard"></ul>
+    <div id="pagination-container">
+      <label for="itemsPerPage">Items per page:</label>
+      <select id="itemsPerPage" name="itemsPerPage">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+    <div id="pagination"></div>
+    <button id="logoutBtn">Logout</button>
+    <script>
+      const logoutBtn = document.getElementById('logoutBtn')
+      logoutBtn.addEventListener('click', () => {
+        localStorage.clear()
+        window.location.href = 'login.html';
+      });
+    </script>
+  </body>
+</html>
+
+
