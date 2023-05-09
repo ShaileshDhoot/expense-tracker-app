@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 razorpay---->
 key id - rzp_test_NQauMjZ3I0BKfz
 Key Secret - gvZmWz3xnxU6bFcv2XL9IGgH
@@ -26,3 +27,6 @@ You can also check the status of the nginx service using the command sudo system
 
 
 jenkins username shailesh, password Maheshwari@799, email shaileshdhoot@25gmail.com
+=======
+
+>>>>>>> 483a68afe8e2d4d2fbce07bf1f8e5295dc98e74d
