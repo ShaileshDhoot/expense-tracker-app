@@ -73,6 +73,53 @@ const getAllExpenses = async (req, res) => {
   }
 };
 
+
+
+const selectMonthData = async (req, res) => {
+  try {
+    const { month } = req.query;
+
+    const startDate = new Date(`${month}/01/${new Date().getFullYear()}`);
+    const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
+
+    const data = await Data.findAll({
+      where: {
+        userId: req.user.id,
+        createdAt: {
+          [sequelize.between]: [startDate, endDate],
+        },
+      },
+    });
+
+    console.log(data);
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error retrieving data' });
+  }
+};
+
+
+
+
+const monthwiseData = async (req, res) => {
+  try {
+    const monthlyExpenses = await Data.findAll({  where: { userId: req.user.id },
+      attributes: [
+        [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%M'), 'month'],
+        [sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']
+      ],
+      group: ['month'],
+      order: [['month', 'ASC']]
+    });
+   return res.json(monthlyExpenses);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
 // delete expense
 const deleteExpense = async (req, res) => {
   try {
@@ -101,4 +148,4 @@ const deleteExpense = async (req, res) => {
 };
 
 
-module.exports = {addExpense, downloadExpenses, getAllExpenses ,deleteExpense}
+module.exports = {addExpense, downloadExpenses, getAllExpenses, selectMonthData,monthwiseData,deleteExpense}

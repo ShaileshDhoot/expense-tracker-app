@@ -8,7 +8,7 @@ function logIn (e){
 
     }
     console.log(loginDetails)
-    axios.post('http://3.83.64.232/postlogin',loginDetails)
+    axios.post('/postlogin',loginDetails)
     .then(response => { 
       console.log('login post api');
         localStorage.setItem('token', response.data.token);

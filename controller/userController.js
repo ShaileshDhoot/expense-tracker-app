@@ -64,4 +64,4 @@ const postLogIn = (req, res, next) => {
   
   }
   
-  module.exports = { postSignUp, postLogIn}
+  module.exports = { postSignUp, generateAccessToken,postLogIn}

@@ -6,14 +6,19 @@ function forgotpassword(e) {
         email: form.get("email"),
     }
     
-    axios.post('http://3.83.64.232/password/forgotpassword',userDetails).then(response => {
-        if(response.status === 202){
-            document.body.innerHTML += '<div style="color:red;">Mail Successfuly sent <div>'
-        } else {
-            throw new Error('Something went wrong!!!')
+    axios.post('/password/forgotpassword', userDetails)
+    .then(response => {
+        if(response){
+        document.body.innerHTML += '<div style="color:red;">Mail Successfully sent <div>'
+        alert('Reset link sent to your email')
+        window.location.href = '/login.html'
+        }else{
+            alert('user doesnot exist')
         }
-    }).catch(err => {
-        document.body.innerHTML += `<div style="color:red;">${err} <div>`;
+        
+    })
+    .catch(err => {
+        // Display error message to the user
+        document.body.innerHTML += `<div style="color:red;">${err.response.data.message} <div>`;
     })
 }
-

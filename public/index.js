@@ -1,3 +1,5 @@
+
+
 const form = document.getElementById("tracker");
 form.addEventListener("submit", addExpense);
 
@@ -17,21 +19,24 @@ function addExpense(e) {
   };
   //console.log(expenseData)
   axios
-    .post("http://3.83.64.232/expense/add", expenseData, {
+    .post("/expense/add", expenseData, {
       headers: { Authorization: token }
     })
     .then((response) => {
-      addNewExpense(expenseData)
+      console.log(response);
+      window.location.reload();
     })
     .catch((err) => console.log(err));
 }
 
-function addNewExpense(element,page) {
-
+function addNewExpense(element) {
+  const currentDate = new Date();
+  const formattedDate = currentDate.getDate() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getFullYear()
   const table = document.getElementById("expenseTable");
   const fragment = document.createDocumentFragment();
   const row = document.createElement("tr");
   const idCell = document.createElement("td");
+  idCell.id = element.id 
   const amountCell = document.createElement("td");
   const descriptionCell = document.createElement("td");
   const categoryCell = document.createElement("td");
@@ -39,7 +44,7 @@ function addNewExpense(element,page) {
   const deleteCell = document.createElement("td");
   const editButton = document.createElement("button");
   const deleteButton = document.createElement("button");
-  const idText = document.createTextNode(element.id);
+  const idText = document.createTextNode(formattedDate);
   const amountText = document.createTextNode(element.amount);
   const descriptionText = document.createTextNode(element.description);
   const categoryText = document.createTextNode(element.category);
@@ -69,11 +74,10 @@ function addNewExpense(element,page) {
 
 
 let currentPage = 1;
-const itemsPerPage = 10
 
 function renderPaginationButtons(response) {
   const paginationDiv = document.getElementById("pagination");
-  const totalPages = Math.ceil(response.data.length / itemsPerPage);
+  const totalPages = Math.ceil(response.data.length / itemsPerPageSelect.value);
 
   paginationDiv.innerHTML = "";
 
@@ -102,13 +106,11 @@ const savedItemsPerPage = localStorage.getItem(storageKey);
 if (savedItemsPerPage) {
   itemsPerPageSelect.value = savedItemsPerPage;
 }
-
-// Listen for changes to the items per page select
 itemsPerPageSelect.addEventListener('change', (event) => {
   const itemsPerPage = event.target.value;
   const token = localStorage.getItem("token")
   localStorage.setItem(storageKey, itemsPerPage); // Save to local storage
-  axios.get("http://3.83.64.232/expense/all", { headers: { Authorization: token } })
+  axios.get("/expense/all", { headers: { Authorization: token } })
     .then((response) => {
       renderExpenses(response);
     })
@@ -122,43 +124,22 @@ function renderExpenses(response = { data: [] }) {
   const fragment = document.createDocumentFragment();
   table.innerHTML = "";
 
-  response.data
-    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    .forEach((element) => {
-      addNewExpense(element, currentPage);
-    });
+  // Slice the data array based on the current page and items per page
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const expenses = response.data.slice(startIndex, endIndex);
 
-  table.appendChild(fragment);
+  // Loop through the expenses and add them to the table
+  expenses.forEach((expense) => {
+    addNewExpense(expense)
+  })
+  renderPaginationButtons(response)
 }
 
 
-// window.addEventListener("DOMContentLoaded", () => {
-//   const token = localStorage.getItem("token");
-//   const tokenParts = token.split('.');
-//   const payload = JSON.parse(atob(tokenParts[1])); // inbuilt front end method to decode jwt token in frontend
-//   const isPremium = payload.isPremiumUser
-//   if(isPremium){
-//     document.getElementById('buyPremium').style.visibility = "hidden"
-//     document.getElementById('message').innerHTML = "You are a Premium User"
-//     leaderboard()
-//   }
-//   axios.get("http://3.83.64.232/expense/all", { headers: { Authorization: token } })
-//     .then((response) => {
-//       renderPaginationButtons(response);
-//       renderExpenses(response);
-//     })
-//     .catch((err) => console.log(err));
-// });
-//  // ----*** to decode jwt token in js file
-// // function parseJwt (token) {
-// //     var base64Url = token.split('.')[1];
-// //     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-// //     var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-// //         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-// //     }).join(''));
 
-// //     return JSON.parse(jsonPayload);
-// // }
+
+
 
 window.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
@@ -170,7 +151,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById('message').innerHTML = "You are a Premium User";
     leaderboard();
   }
-  axios.get("http://3.83.64.232/expense/all", { headers: { Authorization: token } })
+  axios.get("/expense/all", { headers: { Authorization: token } })
     .then((response) => {
       renderPaginationButtons(response);
       renderExpenses(response);
@@ -196,20 +177,13 @@ function base64UrlToUint8Array(base64Url) {
 }
 
 
-
-
-
-
-
-
-
 function leaderboard(){
   const newElement = document.createElement('input')
   newElement.type = 'button'
   newElement.value = 'LEADERBOARD'
   newElement.onclick = async ()=>{
-    const token =await localStorage.getItem('token')
-    const userArray =await axios.get('http://3.83.64.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
+    const token = localStorage.getItem('token')
+    const userArray =await axios.get('/premium/showLeaderBoard', {headers:{"Authorization": token}})
     console.log(userArray);  // will get array of users in form of object
 
     const leaderBoardElement = document.getElementById('leaderboard')
@@ -217,7 +191,7 @@ function leaderboard(){
       // If the leaderboard element doesn't have any child nodes,
       // it means that the leaderboard hasn't been displayed yet,
       // so we can fetch the data and display it.
-      axios.get('http://3.83.64.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
+      axios.get('/premium/showLeaderBoard', {headers:{"Authorization": token}})
         .then((response) => {
           const userArray = response.data;
           console.log(userArray); // will get array of users in form of object
@@ -235,7 +209,7 @@ function leaderboard(){
         // If the leaderboard element already has child nodes,
         // it means that the leaderboard has already been displayed,
         // so we can simply replace the previous data with the new data.
-        axios.get('http://3.83.64.232/premium/showLeaderBoard', {headers:{"Authorization": token}})
+        axios.get('/premium/showLeaderBoard', {headers:{"Authorization": token}})
           .then((response) => {
             const userArray = response.data;
             console.log(userArray); // will get array of users in form of object
@@ -263,7 +237,8 @@ const table = document.getElementById("expenseTable");
 table.addEventListener("click", (event) => {
   const target = event.target;
   const row = target.parentNode.parentNode;
-  const id = row.cells[0].textContent;
+  const id = row.cells[0].id;
+  console.log(row.cells[0].id)
   const token = localStorage.getItem("token");
   if (target.classList.contains("edit")) {
     const amount = row.cells[1].textContent;
@@ -275,10 +250,11 @@ table.addEventListener("click", (event) => {
     document.querySelector("#Category").value = category;
   } else if (target.classList.contains("delete")) {
     axios
-      .delete(`http://3.83.64.232/expense/add/delete/${id}`,{ headers: { "Authorization": token } })
+      .delete(`/expense/add/delete/${id}`,{ headers: { "Authorization": token } })
       .then((response) => {
         console.log("row deleted");
         table.deleteRow(row.rowIndex);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -290,18 +266,17 @@ document.getElementById('buyPremium').onclick = (e)=>{
   e.preventDefault()
   const token = localStorage.getItem('token')
   console.log('Premium button clicked')
-  axios.get('http://3.83.64.232/purchase/premiumMembership',{headers: {"Authorization": token}})
+  axios.get('/purchase/premiumMembership',{headers: {"Authorization": token}})
   .then(response=>{
       const options = {
           "key" : response.data.key_id,
           "order_id" : response.data.order.id,
           "handler": async (response)=>{
-              const res = await axios.post('http://3.83.64.232/purchase/updateTransactionStatus',{
+              const res = await axios.post('/purchase/updateTransactionStatus',{
                   order_id : options.order_id,
                   payment_id : response.razorpay_payment_id                       
               },{ 
-                headers : {"Authorization": token},
-                timeout: 5000
+                headers : {"Authorization": token}
               })
               console.log('logging after post request success')
               alert('You are PREMIUM MEMBER now')
@@ -328,7 +303,7 @@ document.getElementById('buyPremium').onclick = (e)=>{
 //     const description = document.querySelector('.description').value;
 //     const category = document.querySelector('#Category').value;
 
-//     axios.put(`http://3.83.64.232/expense-tracker/${id}`, {
+//     axios.put(`/expense-tracker/${id}`, {
 //             Expense_Amount: amount,
 //             Description: description,
 //             Category: category
