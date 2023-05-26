@@ -8,7 +8,7 @@
 //   const descriptionCell = document.createElement("td");
 //   const categoryCell = document.createElement("td");
 
-//   const date = new Date(element.createdAt); 
+//   const date = new Date(element.timestamp); 
 //   const options = { day: 'numeric', month: 'numeric', year: '2-digit' };
 //   const formattedDate = date.toLocaleDateString('en-IN', options);
 //   const dateText = document.createTextNode(formattedDate);
@@ -20,7 +20,6 @@
 //   amountCell.appendChild(amountText);
 //   descriptionCell.appendChild(descriptionText);
 //   categoryCell.appendChild(categoryText);
-//   incomeCell.appendChild(incomeText)
 //   row.appendChild(dateCell);        
 //   row.appendChild(descriptionCell);
 //   row.appendChild(categoryCell);
@@ -29,8 +28,7 @@
 //   table.appendChild(fragment);
 
 // }
-// const monthlyBtn = document.getElementById("monthlyBtn");
-// monthlyBtn.addEventListener("click", () => {
+// document.getElementById("monthlyBtn").addEventListener("click", () => {
 //   const monthSelect = document.getElementById("monthSelect");
 //   const selectedMonth = monthSelect.value;
 //   const token = localStorage.getItem('token')
@@ -80,10 +78,10 @@ function addYearData() {
         "November",
         "December"
       ];
-      const monthIndex = monthNames.indexOf(element.month);
 
-      const idText = document.createTextNode(monthNames[monthIndex]);
+      const idText = document.createTextNode(monthNames[element.month-1]);
       const descriptionText = document.createTextNode(element.totalAmount)
+      console.log(idText, descriptionText)
       idCell.appendChild(idText);
       descriptionCell.appendChild(descriptionText);
       row.appendChild(idCell);

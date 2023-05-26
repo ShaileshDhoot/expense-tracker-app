@@ -36,7 +36,7 @@ function addNewExpense(element) {
   const fragment = document.createDocumentFragment();
   const row = document.createElement("tr");
   const idCell = document.createElement("td");
-  idCell.id = element.id 
+  idCell.id = element._id 
   const amountCell = document.createElement("td");
   const descriptionCell = document.createElement("td");
   const categoryCell = document.createElement("td");

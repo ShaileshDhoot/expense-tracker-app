@@ -5,7 +5,7 @@ const authMiddleware = async (req, res, next) => {
   try {
     const token = req.header('Authorization')
     const user = jwt.verify(token, 'secretkey');
-     User.findByPk(user.userId)
+     User.findById(user.userId)
      .then((user)=>{
       req.user = user;
       next();

@@ -1,40 +1,39 @@
 const AdminServices = require('../services/adminServices')
 const S3Services = require('../services/s3services')
 const Data = require('../model/expense');
-const signUpData = require('../model/signUp')
-const sequelize = require('../util/database')
+const User = require('../model/signUp')
 
 
-// add expense 
-const addExpense = async (req, res, next) => {
-  try{
-    let t // initialize the variable t
-    const Amount = req.body.amount;
-    const Description = req.body.description;
-    const Category = req.body.category;
+ exports.addExpense = async (req, res, next) => {
+  try {
+    const { amount, description, category } = req.body;
 
-    if(Amount==undefined||Amount.length===0){return res.status(400).json({message:'empty amount'})}
-    if(Description==undefined||Description.length===0){return res.status(400).json({message:'empty Description'})}
-    if(Category==undefined||Category.length===0){return res.status(400).json({message:'empty Category'})}
+    if (!amount || amount.length === 0) {
+      return res.status(400).json({ message: 'empty amount' });
+    }
+    if (!description || description.length === 0) {
+      return res.status(400).json({ message: 'empty description' });
+    }
+    if (!category || category.length === 0) {
+      return res.status(400).json({ message: 'empty category' });
+    }
 
-    t = await sequelize.transaction();
+    const expense = await Data.create({
+      amount: amount,
+      description: description,
+      category: category,
+      userId: req.user._id
+    });
 
-    await Data.create({                         
-      amount: Amount,
-        description: Description,
-        category: Category,
-        userId: req.user.id
-    }, {transaction:t}) 
-    
-      const user = await signUpData.findByPk(req.user.id,{transaction:t} )      
-      user.totalExpense += parseInt(Amount)
-      await user.save({ transaction: t });  
-      await t.commit();         
-      return res.status(201).json({message:' expense created'})      
-      }catch(err) {
-        console.log(err);
-        return res.status(500).json({ message: 'Server issue' });
-      };
+    const user = await User.findById(req.user._id);
+    user.totalExpense += parseInt(amount);
+    await user.save();
+
+    return res.status(201).json({ message: 'expense created' });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: 'Server issue' });
+  }
 };
 
 /*
@@ -44,14 +43,29 @@ const addExpense = async (req, res, next) => {
     and the database returns to its previous state before the transaction started
  */
   
+
+
+
+// all expense
+exports.getAllExpenses = async (req, res) => {
+  try {
+    const expenses = await Data.find({userId: req.user._id}); //
+    return res.status(200).json(expenses);
+  } catch (error) {
+    console.log(error);
+   return  res.status(500).json({ message: 'Server issue' });
+  }
+};
+
 // download expense
-const downloadExpenses = async (req,res) =>{
+
+exports.downloadExpenses = async (req,res) =>{
   try{
     const expenses =await AdminServices.getExpenses(req)
     //console.log(expenses)
     const stringifyExpenses = JSON.stringify(expenses)
     //console.log(stringifyExpenses);
-    const userId = req.user.id;
+    const userId = req.user._id;
     const filename = `Expenses${userId}/${new Date()}.txt`
     const fileURL = await S3Services.uploadToS3(stringifyExpenses,filename)
     console.log(fileURL)
@@ -61,58 +75,52 @@ const downloadExpenses = async (req,res) =>{
   }
 }
 
+// exports.selectMonthData = async (req, res) => {
+//   try {
+//     const { month } = req.query;
 
-// all expense
-const getAllExpenses = async (req, res) => {
+//     const startDate = new Date(`${month}/01/${new Date().getFullYear()}`);
+//     const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
+
+//     const data = await Data.find({
+//       userId: req.user._id,
+//       timestamp: { $gte: startDate, $lte: endDate },
+//     });
+
+//     console.log(data);
+//     return res.json(data);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: 'Error retrieving data' });
+//   }
+// };
+
+
+
+
+
+
+exports.monthwiseData = async (req, res) => {
   try {
-    const expenses = await Data.findAll({ where: { userId: req.user.id } }); //
-    return res.status(200).json(expenses);
-  } catch (error) {
-    console.log(error);
-   return  res.status(500).json({ message: 'Server issue' });
-  }
-};
-
-
-
-const selectMonthData = async (req, res) => {
-  try {
-    const { month } = req.query;
-
-    const startDate = new Date(`${month}/01/${new Date().getFullYear()}`);
-    const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
-
-    const data = await Data.findAll({
-      where: {
-        userId: req.user.id,
-        createdAt: {
-          [sequelize.between]: [startDate, endDate],
+    const monthlyExpenses = await Data.aggregate([
+      {
+        $match: {
+          userId: req.user._id,
         },
       },
-    });
-
-    console.log(data);
-    return res.json(data);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Error retrieving data' });
-  }
-};
-
-
-
-
-const monthwiseData = async (req, res) => {
-  try {
-    const monthlyExpenses = await Data.findAll({  where: { userId: req.user.id },
-      attributes: [
-        [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%M'), 'month'],
-        [sequelize.fn('SUM', sequelize.col('amount')), 'totalAmount']
-      ],
-      group: ['month'],
-      order: [['month', 'ASC']]
-    });
-   return res.json(monthlyExpenses);
+      {
+        $group: {
+          _id: { $month: '$timestamp' },
+          month: { $first: { $month: '$timestamp' } },
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+      {
+        $sort: { month: 1 },
+      },
+    ]);
+    console.log(monthlyExpenses)
+    return res.json(monthlyExpenses);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server Error' });
@@ -120,26 +128,29 @@ const monthwiseData = async (req, res) => {
 };
 
 
+
 // delete expense
-const deleteExpense = async (req, res) => {
+exports.deleteExpense = async (req, res) => {
   try {
-    
-    const id = req.params.id
-    console.log(id)
-    const expense = await Data.findByPk(id);
-    if (!expense) {
+    const id = req.params.id;
+    console.log(id);
+
+    // Find the expense by ID and delete it
+    const deletedExpense = await Data.findByIdAndDelete(id);
+    if (!deletedExpense) {
       return res.status(404).send("Expense not found");
     }
 
-    const amount = expense.amount
-    console.log(amount)
-    await expense.destroy()
-    const user = await signUpData.findByPk(req.user.id);
+    const amount = deletedExpense.amount;
+    console.log(amount);
+
+    // Find the user associated with the expense and update their totalExpense
+    const user = await User.findById(req.user.id);
     if (user) {
       user.totalExpense -= amount;
       await user.save();
     }
-    
+
     return res.send("Expense deleted");
   } catch (error) {
     console.log(error);
@@ -147,5 +158,3 @@ const deleteExpense = async (req, res) => {
   }
 };
 
-
-module.exports = {addExpense, downloadExpenses, getAllExpenses, selectMonthData,monthwiseData,deleteExpense}

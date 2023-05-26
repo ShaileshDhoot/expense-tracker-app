@@ -2,19 +2,15 @@ const User = require('../model/signUp')
 
 
 const getLeaderBoard = async (req, res) => {
-    try {
-      const leaderBoardDetails = await User.findAll({
-        order: [
-          ['totalExpense', 'DESC']
-        ]
-      })
-      
-      res.status(200).json(leaderBoardDetails);
-    } catch (err) {
-      console.log(err);
-    }
+  try {
+    const leaderBoardDetails = await User.find().sort({ totalExpense: -1 });
+    res.status(200).json(leaderBoardDetails);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: 'Something went wrong' });
   }
-  
+};
+
   module.exports = {getLeaderBoard}
 
 

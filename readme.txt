@@ -3,13 +3,12 @@ razorpay---->
 key id - rzp_test_NQauMjZ3I0BKfz
 Key Secret - gvZmWz3xnxU6bFcv2XL9IGgH
 
-awsserver start - ssh -i "deploy1.pem" ec2-user@3.83.64.232
+awsserver start - ssh -i "deploy1.pem" ec2-user@50.17.16.164
 
-jenkins 
-/var/lib/jenkins/workspace/Expense-tracker
+
 
 change directry for jenkins to this
-cd /var/lib/jenkins/workspace/Expense-tracker
+
 
  install Nginx on a Linux system, you can follow these general steps:
 
@@ -29,4 +28,4 @@ You can also check the status of the nginx service using the command sudo system
 jenkins username shailesh, password Maheshwari@799, email shaileshdhoot@25gmail.com
 =======
 
->>>>>>> 483a68afe8e2d4d2fbce07bf1f8e5295dc98e74d
+

@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const fs = require('fs')
+const mongoose = require('mongoose')
 //routes
 const mainRoutes = require('./routes/main');
 const purchaseRoutes = require('./routes/purchaseRouter');
@@ -10,8 +11,7 @@ const userRoutes = require('./routes/userRoutes');
 const premiumRoutes = require('./routes/premiumRoutes')
 const resetPasswordRoutes = require('./routes/resetPasswordRoutes')
 
-//models
-const sequelize = require('./util/database');
+
 const Forgotpassword = require('./model/forgotpassword')
 const Expense = require('./model/expense');
 const User = require('./model/signUp');
@@ -20,7 +20,7 @@ const dotenv = require('dotenv');
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),{flags:'a'})
 
-const helmet = require('helmet')
+// const helmet = require('helmet')
 const compression = require('compression')
 const morgan = require('morgan')
 
@@ -50,18 +50,22 @@ app.use((req, res, next) => {
 
 
 // association of models (tables)
-User.hasMany(Expense);
-Expense.belongsTo(User);
+// User.hasMany(Expense);
+// Expense.belongsTo(User);
 
-User.hasMany(Order);
-Order.belongsTo(User);
+// User.hasMany(Order);
+// Order.belongsTo(User);
 
-User.hasMany(Forgotpassword);
-Forgotpassword.belongsTo(User);
+// User.hasMany(Forgotpassword);
+// Forgotpassword.belongsTo(User);
 
-sequelize.sync()  // {force:true}
-.then(()=>{
-    app.listen(process.env.PORT || 3000)
+mongoose
+.connect(
+  'mongodb+srv://shaileshdhoot:RlrbEHoWBenlUD2U@cluster0.uwmp5w4.mongodb.net/?retryWrites=true&w=majority'
+  )
+.then(result=>{
+  app.listen(3000)
+  console.log('connected');
 })
-.catch(err=> console.log(err));
+.catch(err=>console.log(err))
 

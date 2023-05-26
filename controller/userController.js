@@ -1,4 +1,4 @@
-const signUpData = require('../model/signUp')
+const User = require('../model/signUp')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -11,12 +11,12 @@ const postSignUp = async (req,res,next)=>{
     return res.status(400).send({ message: "Password is required" });
   }
   try {
-    const existingUser = await signUpData.findOne({ where: { email: email } });
+    const existingUser = await User.findOne({email: email});
     if (existingUser) {
       return res.status(409).send({ message: "User already exists" });
     }
     const hash = bcrypt.hashSync(password, 10);
-     await signUpData.create({
+     await User.create({
       name: name,
       email: email,
       password: hash
@@ -39,7 +39,7 @@ const postLogIn = (req, res, next) => {
     const emailId = req.body.email
     const password = req.body.password
     //console.log(req.body, 'login controller, getlogin function')
-    signUpData.findOne({ where: { email: emailId } })
+    User.findOne({ email: emailId } )
     .then(user => {
       if (user) {
         bcrypt.compare(password, user.password, (err, result) => {
